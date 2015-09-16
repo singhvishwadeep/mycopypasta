@@ -1,16 +1,6 @@
 #!C:/xampp/perl/bin/perl.exe
-use CGI qw(:standard);
-use CGI::Pretty qw(:all);
-use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
 use DBI;
-use DBD::mysql;
-use DBI qw(:sql_types);
-my $query = new CGI;
-
-my $error;
-
 use CGI qw/:standard/;
-
 
 print "Content-type: text/html\n\n";
 print "<html><h1>OTT Login</h1></html>\n";
@@ -25,7 +15,6 @@ print 'Password:<p><INPUT TYPE=PASSWORD NAME="mypassword" id = "Password" size =
 print '</p>';
 print '<p><input type="submit" value="Submit" /></p>';
 print '</form>';
-
 if (param('User') and param('mypassword')) {
 	$usr=ucfirst(lc(param('User')));
 	$pwd=ucfirst(lc(param('mypassword')));
