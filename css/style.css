@@ -100,7 +100,7 @@ body {
 .login .otherbox .colorme {
     width: 50%;
     height: auto;
-    float: left;
+    float: right;
 }
 
 .login .otherbox .colorme a {
@@ -191,4 +191,48 @@ body {
     font-family: Arial;
 	border-top: #0b0b0b 1px solid;
     border-bottom: #353535 1px solid;
+}
+
+
+.nav ul {
+  list-style: none;
+  background-color: #1E1E1E;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+}
+
+.nav li {
+  font-family: 'Arial', sans-serif;
+}
+ 
+.nav a {
+  text-decoration: none;
+  color: #FFFFFF;
+  display: block;
+}
+ 
+.nav a:hover {
+  background-color: #349e92;
+}
+ 
+.nav a.active {
+  background-color: #3399FF;
+  color: #bfbfbf;
+  cursor: default;
+}
+ 
+@media screen and (min-width: 600px) {
+  .nav li {
+    width: 120px;
+    border-bottom: none;
+    height: auto;
+    line-height: 40px;
+    font-size: 1.2em;
+  }
+ 
+  .nav li {
+    display: inline-block;
+    margin-right: -4px;
+  }
 }

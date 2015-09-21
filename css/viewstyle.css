@@ -1,0 +1,44 @@
+p.one {
+    padding: 13px;
+    background: #FFF4CC;
+    border-left-width: 20px;
+    border-left-style: solid;
+    border-left-color: yellow;
+    box-shadow: 0px 0px 50px rgba(0,0,0,.8);
+}
+
+p.subone {
+    padding: 26px;
+    background: #FFF4CC;
+    border-left-width: 20px;
+    border-left-style: solid;
+    border-left-color: yellow;
+    box-shadow: 0px 0px 50px rgba(0,0,0,.8);
+}
+
+text.headings {
+	padding: 13px;
+    font-size: 15px;
+    color: #000000;
+    font-weight: bold;
+    font-family: Arial;
+	text-shadow: 6px 6px 0px rgba(0,0,0,0.2);
+}
+
+text.discussion {
+	white-space: nowrap; 
+    hieght: 5px; 
+    border: 1px solid #000000;
+    overflow: hidden;
+	padding-top: 26px;
+    font-size: 14px;
+    color: #000000;
+    font-family: Arial;
+    text-overflow: ellipsis;
+}
+
+text.information {
+    font-size: 14px;
+    color: #000000;
+    font-family: Arial;
+}
