@@ -1,5 +1,4 @@
 body {
-    height:100%;
     background: -webkit-linear-gradient(skyblue, white); /* For Safari 5.1 to 6.0 */
     background: -o-linear-gradient(skyblue, white); /* For Opera 11.1 to 12.0 */
     background: -moz-linear-gradient(skyblue, white); /* For Firefox 3.6 to 15 */
@@ -42,7 +41,7 @@ body {
 }
 
 .login form input[type=text], .login form input[type=password] {
-    width: 200px;
+    width: 100%;
     font-size: 12px;
     padding-top: 14px;
     padding-bottom: 14px;
@@ -224,7 +223,7 @@ body {
  
 @media screen and (min-width: 600px) {
   .nav li {
-    width: 120px;
+    width: 180px;
     border-bottom: none;
     height: auto;
     line-height: 40px;
