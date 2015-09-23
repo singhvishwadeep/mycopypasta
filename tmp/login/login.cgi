@@ -1,6 +1,9 @@
 #!C:\xampp\perl\bin\perl.exe
+
 use CGI qw(:standard);
-use CGI qw/:standard/;
+use CGI::Carp qw(fatalsToBrowser);
+use CGI;
+use CGI::Cookie qw();
 
 my $query = new CGI;
 use DBI;
@@ -64,14 +67,11 @@ if (param('User') and param('mypassword'))
 
 		print ("Welcome $usr, you have entered correct password your cookie is $cookie_id<br />");
 		
-		my $cookie = cookie(-name=>'CGI-PERL-COOKIE-EXAMPLE', value=>'cookie.linuxconfig.org', -expires=>'+1y');
-		print (-cookie=>$cookie),
-		my $retrieve_cookie = cookie('CGI-PERL-COOKIE-EXAMPLE');
+		my $cookie1 = CGI::Cookie->new(-name=>'V',-value=>$cookie_id);
+		my $retrieve_cookie = cookie('V');
 		print ("Cookie value is $retrieve_cookie<br />");
-		
-		my %cookiesf = CGI::Cookie->fetch;
-		print "theCookie = $cookiesf{'CGI-PERL-COOKIE-EXAMPLE'} <br/>";
-		
+
+
 		$dbh->disconnect();
 	}	
 	
