@@ -68,10 +68,9 @@ body {
 
 .login form .submitbox {
     width: 240px;
-    height: 12px;
+    height: 40px;
     display: block;
-    padding-top: 14px;
-    padding-bottom: 14px;
+    padding: 1px;
     border-radius: 6px;
     border: none;
     border-top: #4eb2a8 1px solid;
@@ -172,10 +171,9 @@ body {
 
 .register form .submitbox {
     width: 240px;
-    height: 12px;
+    height: 40px;
     display: block;
-    padding-top: 14px;
-    padding-bottom: 14px;
+    padding: 1px;
     border-radius: 6px;
     border: none;
     border-top: #4eb2a8 1px solid;
@@ -193,45 +191,47 @@ body {
 }
 
 
-.nav ul {
-  list-style: none;
-  background-color: #1E1E1E;
-  text-align: center;
-  padding: 0;
-  margin: 0;
+#centeredmenu {
+   float:left;
+   width:100%;
+   background:#ddd;
 }
 
-.nav li {
-  font-family: 'Arial', sans-serif;
+#centeredmenu ul {
+   clear:left;
+   float:left;
+   list-style:none;
+   margin:0;
+   padding:0;
+   position:relative;
+   left:50%;
+   text-align:center;
 }
- 
-.nav a {
-  text-decoration: none;
-  color: #FFFFFF;
-  display: block;
+#centeredmenu ul li {
+   display:block;
+   float:left;
+   list-style:none;
+   margin:0;
+   padding:0;
+   position:relative;
+   right:50%;
 }
- 
-.nav a:hover {
-  background-color: #349e92;
+#centeredmenu ul li a {
+   display:block;
+   margin:0 0 0 1px;
+   padding:3px 10px;
+   background:#ddd;
+   color:#000;
+   text-decoration:none;
+   line-height:1.3em;
 }
- 
-.nav a.active {
-  background-color: #3399FF;
-  color: #bfbfbf;
-  cursor: default;
+#centeredmenu ul li a:hover {
+   background:#369;
+   color:#fff;
 }
- 
-@media screen and (min-width: 600px) {
-  .nav li {
-    width: 180px;
-    border-bottom: none;
-    height: auto;
-    line-height: 40px;
-    font-size: 1.2em;
-  }
- 
-  .nav li {
-    display: inline-block;
-    margin-right: -4px;
-  }
+#centeredmenu ul li a.active,
+#centeredmenu ul li a.active:hover {
+   color:#fff;
+   background:#000;
+   font-weight:bold;
 }
