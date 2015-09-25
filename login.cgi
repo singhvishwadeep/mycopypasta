@@ -8,8 +8,27 @@ my $value = $q->cookie('MYCOPYPASTACOOKIE');
 print $q->header;
 my $err = 0;
 my $login = 0;
-if($value ne "" && $value eq "1") {
-	$login = 1;
+if($value eq "") {
+	#print "Cookie is empty/not set\n";
+	#Empty cookie found, remove if cookie found
+	#require "removecookie.cgi";
+#	my $cookie1 = CGI::Cookie->new(-name=>'MYCOPYPASTACOOKIE',-value=>'',-expires=>'now');
+} else {
+	#if session is not expired
+	if ($value eq "1") {
+		#already logged in
+		#print "already logged in\n";
+#		my $url="view.html";
+#		my $t=1;
+#		print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+		$login = 1;
+	} else {
+		#print "wrong username/password\n";
+		#wrong password
+		$err = 1;
+		#require "removecookie.cgi";
+#		my $cookie1 = CGI::Cookie->new(-name=>'MYCOPYPASTACOOKIE',-value=>'',-expires=>'now');
+	}
 }
 
 print '<html lang="en-US">
@@ -18,7 +37,6 @@ print '<html lang="en-US">
 		<link rel="shortcut icon" href="images/newlogo.ico">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
-		<link rel="stylesheet" type="text/css" href="css/paragraph.css">
 		<div id="fb-root"></div>
 		<script>(function(d, s, id) {
 			  var js, fjs = d.getElementsByTagName(s)[0];
@@ -59,20 +77,23 @@ print '<html lang="en-US">
 				    </div>
 				</td>
 			</tr>
-			<tr>
-				<td>
-					<img src="images/profile.jpg" alt="Edit" style="width:100%;height:300px;">
-				</td>
-			</tr>
-			<tr>
-				<td>
-				<p>My Copy-Pasta.
-					This creation is inspired by several thoughts. We come across with different information daily, but, we dont keep track of it. As you cannot trust on human mind for storing the information for longer time. As i had seen lot of branches of science and dealing with different set every time, which makes me learn new things daily. But, slowly i started
-					forgetting these things and i started loosing track of them. Hence, i thought of building a platform, where you can save anything you want and keep it for future purpose.
-				</p>
-				</td>
-			</tr>
 		</table>
+		<section class="login">
+			<div class="loginbox">My Copy-Pasta Login</div>
+			<form action="validate.cgi" method="post" autocomplete="off">
+		    	<input type="text" required title="Username required" placeholder="Username" name="User" autocomplete="off">
+		        <input type="password" required title="Password required" placeholder="Password" name="Password"><br /><br />
+		        <input type="submit" class="submitbox" name="submit" alt="search" value="Submit">';
+if ($err) {
+	print '<div class="colorerr">Wrong username/Password</div>';
+}
+		        
+				print '<div class="otherbox">
+						<div class="colorme"><a href="register.cgi">Register</a></div>
+		            <div class="colorme"><a href="forgotpwd.cgi">Forgot Password?</a></div>
+		        </div>
+		    </form>
+		</section>
 	</body>
 	<div style="text-align:center"><text style="color:grey;font-size:12px">©2015 Vishwadeep Singh My Copy-Pasta</text></div>
 	<hr width="65%">

@@ -11,7 +11,6 @@ my $login = 0;
 if($value ne "" && $value eq "1") {
 	$login = 1;
 }
-
 print '<html lang="en-US">
 	<head>
 		<title>My Copy-Pasta</title>
@@ -57,19 +56,6 @@ print '<html lang="en-US">
 				        }
 				      print '</ul>
 				    </div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<img src="images/profile.jpg" alt="Edit" style="width:100%;height:300px;">
-				</td>
-			</tr>
-			<tr>
-				<td>
-				<p>My Copy-Pasta.
-					This creation is inspired by several thoughts. We come across with different information daily, but, we dont keep track of it. As you cannot trust on human mind for storing the information for longer time. As i had seen lot of branches of science and dealing with different set every time, which makes me learn new things daily. But, slowly i started
-					forgetting these things and i started loosing track of them. Hence, i thought of building a platform, where you can save anything you want and keep it for future purpose.
-				</p>
 				</td>
 			</tr>
 		</table>

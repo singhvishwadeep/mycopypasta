@@ -2,6 +2,7 @@
 use CGI qw(:standard);
 use CGI::Carp qw/fatalsToBrowser warningsToBrowser/;
 use CGI::Cookie;
+use DBI;
 
 my $q = new CGI;
 my $value = $q->cookie('MYCOPYPASTACOOKIE');
@@ -10,15 +11,18 @@ my $err = 0;
 my $login = 0;
 if($value ne "" && $value eq "1") {
 	$login = 1;
+} else {
+	my $url="login.cgi";
+	my $t=0; # time until redirect activates
+	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 }
-
 print '<html lang="en-US">
 	<head>
 		<title>My Copy-Pasta</title>
 		<link rel="shortcut icon" href="images/newlogo.ico">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
-		<link rel="stylesheet" type="text/css" href="css/paragraph.css">
+		<link rel="stylesheet" type="text/css" href="css/addpasta.css">
 		<div id="fb-root"></div>
 		<script>(function(d, s, id) {
 			  var js, fjs = d.getElementsByTagName(s)[0];
@@ -59,20 +63,34 @@ print '<html lang="en-US">
 				    </div>
 				</td>
 			</tr>
-			<tr>
-				<td>
-					<img src="images/profile.jpg" alt="Edit" style="width:100%;height:300px;">
-				</td>
-			</tr>
-			<tr>
-				<td>
-				<p>My Copy-Pasta.
-					This creation is inspired by several thoughts. We come across with different information daily, but, we dont keep track of it. As you cannot trust on human mind for storing the information for longer time. As i had seen lot of branches of science and dealing with different set every time, which makes me learn new things daily. But, slowly i started
-					forgetting these things and i started loosing track of them. Hence, i thought of building a platform, where you can save anything you want and keep it for future purpose.
-				</p>
-				</td>
-			</tr>
-		</table>
+		</table>';
+		
+		print '<section class="adddata">
+			<div class="loginbox">Add Copy-Pasta</div>
+			<form action="adddone.cgi" method="post">
+			Category: <select>';
+			
+		my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+		my $dbh = DBI->connect($dsn,"root","");
+		my $sth = $dbh->prepare("SELECT distinct(category) FROM categoryinfo");
+		$sth->execute();
+		while (my $ref = $sth->fetchrow_hashref()) {
+			if ($ref->{'category'} ne "") {
+				print " <option value=\"$ref->{'category'}\">$ref->{'category'}</option>";
+			}
+		}	
+		print '</select><br />
+		    	<input type="text" required title="Topic" placeholder="Topic"><br />
+		    	<textarea class="discussion"></textarea>
+		    	<input type="text" required title="Sources" placeholder="Sources (add them comma separated)"><br />
+		    	<input type="text" required title="Tags" placeholder="Tags (add them comma separated)"><br />
+		    	Share: <select>
+		    	<option value="public">public</option>
+		    	<option value="private">private</option>
+		    	</select>
+		    	<input type="submit" class="submitbox" name="submit" alt="search" value="Submit your Copy-Pasta">
+		    </form>
+		</section>
 	</body>
 	<div style="text-align:center"><text style="color:grey;font-size:12px">©2015 Vishwadeep Singh My Copy-Pasta</text></div>
 	<hr width="65%">

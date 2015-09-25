@@ -101,6 +101,11 @@ body {
     float: right;
 }
 
+.colorerr {
+	font: 12px Arial;
+	color:red;
+}
+
 .login .otherbox .colorme a {
     color: #fff;
     text-decoration: none;

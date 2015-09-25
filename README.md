@@ -1,2 +1,2 @@
 # mycopypasta
-Copy Pasta
+Copy-Pasta
