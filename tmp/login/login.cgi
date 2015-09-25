@@ -48,7 +48,7 @@ if (param('User') and param('mypassword'))
 		die;
 	} else {
 		# deleting any previous cookie
-		my $cookie = $query->cookie (-name=> 'cookie_id_mycopypasta', -value   => '', -expires => '-1d');
+		my $cookie = $query->cookie (-name=> 'MYCOPYPASTACOOKIE', -value   => '', -expires => '-1d');
 		my $IP = $ENV{REMOTE_ADDR};
 		my $cookie_id = "$usr.".random_id().".$IP";
 		print "$cookie_id<br/>";
@@ -56,14 +56,14 @@ if (param('User') and param('mypassword'))
 		$sth->execute();
 		$sth->finish();
 		# creting a new cookie
-		my $cookie = $query->cookie (-name=>'cookie_id_mycopypasta', -value=> '$cookie_id');
+		my $cookie = $query->cookie (-name=>'MYCOPYPASTACOOKIE', -value=> '$cookie_id');
 		
 		#check cookie exists or not!
-		$theCookie = $query->cookie('cookie_id_mycopypasta');
+		$theCookie = $query->cookie('MYCOPYPASTACOOKIE');
 		print "theCookie = $theCookie<br/>";
 		
 		my %cookiesf = CGI::Cookie->fetch;
-		print "theCookie = $cookiesf{'cookie_id_mycopypasta'} <br/>";
+		print "theCookie = $cookiesf{'MYCOPYPASTACOOKIE'} <br/>";
 
 		print ("Welcome $usr, you have entered correct password your cookie is $cookie_id<br />");
 		
