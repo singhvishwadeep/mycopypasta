@@ -4,13 +4,19 @@ use DBI;
 use CGI qw(:standard);
 use CGI::Carp qw/fatalsToBrowser warningsToBrowser/;
 use CGI::Cookie;
+use CGI::Session;
 
 my $q = new CGI;
 
 my $login = 0;
 
+# creating a session
+$session = new CGI::Session(); #initiate a session.
+$id =$session->id();
+$session->param('logged_in_status_mycp','0');
+$session->expire('+1y');
 # Create new cookies and send them
-$cookie1 = CGI::Cookie->new(-name=>'MYCOPYPASTACOOKIE',-value=>'');
+$cookie1 = CGI::Cookie->new(-name=>'MYCOPYPASTACOOKIE',-value=>$id);
 print $q->header(-cookie=>[$cookie1]);
 my $url="index.cgi";
 if (param('User') and param('Password'))
@@ -40,6 +46,7 @@ if (param('User') and param('Password'))
 		#print "Wrong password<br/>";
 		$url = "loginerrcookie.cgi";
 	} else {
+		$session->param('logged_in_user_mycp',$usr);
 		$url = "loginsetcookie.cgi?username=$usr";
 		#print "Correct password<br/>";
 		$login = 1;

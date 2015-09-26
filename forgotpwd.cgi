@@ -2,15 +2,35 @@
 use CGI qw(:standard);
 use CGI::Carp qw/fatalsToBrowser warningsToBrowser/;
 use CGI::Cookie;
+use CGI::Session;
 
+# new cgi query
 my $q = new CGI;
-my $value = $q->cookie('MYCOPYPASTACOOKIE');
+# fetching cookie
+my $ssid = $q->cookie('MYCOPYPASTACOOKIE');
+# printing header
 print $q->header;
+# login error or not
 my $err = 0;
+# proper logged in?
 my $login = 0;
-if($value ne "" && $value eq "1") {
-	$login = 1;
+
+if($ssid eq "") {
+	# empty/no cookie found. Hence not logged in
+} else {
+	# cookie has some value, hence loading session from $ssid
+	$session = CGI::Session->load($ssid) or die "$!";
+	if($session->is_expired || $session->is_empty) {
+		# if session is expired/empty, need to relogin
+	} else {
+		my $value = $session->param('logged_in_status_mycp');
+		if ($value eq "1") {
+			# properly logged in
+			$login = 1;
+		}
+	}
 }
+
 print '<html lang="en-US">
 	<head>
 		<title>My Copy-Pasta</title>

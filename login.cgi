@@ -2,32 +2,37 @@
 use CGI qw(:standard);
 use CGI::Carp qw/fatalsToBrowser warningsToBrowser/;
 use CGI::Cookie;
+use CGI::Session;
 
+# new cgi query
 my $q = new CGI;
-my $value = $q->cookie('MYCOPYPASTACOOKIE');
+# fetching cookie
+my $ssid = $q->cookie('MYCOPYPASTACOOKIE');
+# printing header
 print $q->header;
+# login error or not
 my $err = 0;
+# proper logged in?
 my $login = 0;
-if($value eq "") {
-	#print "Cookie is empty/not set\n";
-	#Empty cookie found, remove if cookie found
-	#require "removecookie.cgi";
-#	my $cookie1 = CGI::Cookie->new(-name=>'MYCOPYPASTACOOKIE',-value=>'',-expires=>'now');
+if($ssid eq "") {
+	# empty/no cookie found. Hence not logged in
 } else {
-	#if session is not expired
-	if ($value eq "1") {
-		#already logged in
-		#print "already logged in\n";
-#		my $url="view.html";
-#		my $t=1;
-#		print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
-		$login = 1;
+	# cookie has some value, hence loading session from $ssid
+	$session = CGI::Session->load($ssid) or die "$!";
+	if($session->is_expired || $session->is_empty) {
+		# if session is expired/empty, need to relogin
 	} else {
-		#print "wrong username/password\n";
-		#wrong password
-		$err = 1;
-		#require "removecookie.cgi";
-#		my $cookie1 = CGI::Cookie->new(-name=>'MYCOPYPASTACOOKIE',-value=>'',-expires=>'now');
+		my $value = $session->param('logged_in_status_mycp');
+		if ($value eq "1") {
+			# properly logged in
+			$login = 1;
+			my $url="index.cgi";
+			my $t=0; # time until redirect activates
+			print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+		} else {
+			#wrong password/ some error
+			$err = 1;
+		}
 	}
 }
 
