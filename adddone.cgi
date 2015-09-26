@@ -3,6 +3,7 @@ use CGI qw(:standard);
 use CGI::Carp qw/fatalsToBrowser warningsToBrowser/;
 use CGI::Cookie;
 use CGI::Session;
+use DBI;
 
 # new cgi query
 my $q = new CGI;
@@ -37,60 +38,83 @@ if ($login == 0) {
 	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 }
 
-my $getuser = $session->param('logged_in_user_mycp');
+sub  trim { 
+	my $s = shift;
+	$s =~ s/^\s+|\s+$//g;
+	return $s;
+}
 
-print '<html lang="en-US">
-	<head>
-		<title>My Copy-Pasta</title>
-		<link rel="shortcut icon" href="images/newlogo.ico">
-		<link rel="stylesheet" type="text/css" href="css/style.css">
-		<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
-		<div id="fb-root"></div>
-		<script>(function(d, s, id) {
-			  var js, fjs = d.getElementsByTagName(s)[0];
-			  if (d.getElementById(id)) return;
-			  js = d.createElement(s); js.id = id;
-			  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.4&appId=173510282674533";
-			  fjs.parentNode.insertBefore(js, fjs);
-			}(document, \'script\', \'facebook-jssdk\'));
-		</script>
-	</head>
+my $getuser = $session->param('logged_in_userid_mycp');
+
+my $topic=param('topic');
+my $selectcategory=param('selectcategory');
+my $new_category=param('new_category');
+my $discussion=param('discussion');
+my $sources=param('sources');
+my $tags=param('tags');
+my $share=param('share');
+my $category = "";
+
+$topic = trim($topic);
+$selectcategory = trim($selectcategory);
+$new_category = trim($new_category);
+$discussion = trim($discussion);
+$sources = trim($sources);
+$tags = trim($tags);
+$share = trim($share);
+
+#print "user = -$getuser- <br/>";
+#print "selectcategory = $selectcategory <br>";
+#print "new_category = $new_category <br>";
+#print "topic = $topic <br>";
+#print "discussion = $discussion <br>";
+#print "sources = $sources <br>";
+#print "tags = $tags <br>";
+#print "share = $share <br>";
+
+
+if ($topic ne "" and $discussion ne "") {
+	if ($selectcategory eq "Create New Category") {
+		if ($new_category ne "") {
+			$category = $new_category;
+		} else {
+			$category = "general";
+		}
+	} else {
+		$category = $selectcategory;
+	}
+	my @parsedsources;
+	my @valsources = split(',', $sources);
+	foreach my $val (@valsources) {
+		$val = trim($val);
+		push @parsedsources, $val;
+	}
+	$sources = join ( ',', @parsedsources );
+	my @parsedtags;
+	my @valtags = split(',', $tags);
+	foreach my $val (@valtags) {
+		$val = trim($val);
+		push @parsedtags, $val;
+	}
+	$tags = join ( ',', @parsedtags );
+	if ($share eq "private") {
+		$share = 0;
+	} else {
+		$share = 1;
+	}
 	
-	<body>
-		<table class="box" align="center" width="65%">
-			<tr>
-				<td>
-					<div style="text-align:center"><img src="images/banner.jpg" alt="Edit" style="width:100%;height:250px;"></div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-				    <div id="centeredmenu">
-				      <ul>
-				        <li><a href="index.cgi">Home</a></li>';
-				        if ($login) {
-					        print '<li><a href="addpasta.cgi">Add Copy-Pasta</a></li>';
-				        }
-				        print '<li><a href="view.cgi">My Copy-Pasta</a></li>
-				        <li><a href="tutorial.cgi">Tutorials</a></li>
-				        <li><a href="search.cgi">Search Copy-Pasta</a></li>
-				        <li><a href="contact.cgi">Contact Us</a></li>';
-				        if ($login) {
-					        print '<li><a href="logout.cgi">Logout</a></li>
-					        <li><a href="profile.cgi">Profile</a></li>';
-				        } else {
-				        	print '<li><a href="login.cgi">Login</a></li>';
-				        }
-				      print '</ul>
-				    </div>
-				</td>
-			</tr>
-		</table>
-	</body>
-	<div style="text-align:center"><text style="color:grey;font-size:12px">©2015 Vishwadeep Singh My Copy-Pasta</text></div>
-	<hr width="65%">
-	<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
-</html>';
+	
+	my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+	my $dbh = DBI->connect($dsn,"root","");
+	my $sth = $dbh->prepare("INSERT into datasubmission ( user,category,topic,discussion,source,tags,date,public,showme ) VALUES ( '$getuser', '$category','$topic','$discussion','$sources','$tags',NOW(),'$share','1')");
+	$sth->execute();
+	$sth->finish();
+	$dbh->disconnect();
+	$url = "view.cgi";
+} else {
+	$url = "addpasta.cgi";
+}
 
-
+my $t=1; # time until redirect activates
+print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 1;

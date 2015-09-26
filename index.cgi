@@ -95,10 +95,9 @@ print '<html lang="en-US">
 			</tr>
 		</table>
 	</body>
-	<div style="text-align:center"><text style="color:grey;font-size:12px">©2015 Vishwadeep Singh My Copy-Pasta</text></div>
+	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 Vishwadeep Singh My Copy-Pasta</text></div>
 	<hr width="65%">
 	<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 </html>';
-
 
 1;

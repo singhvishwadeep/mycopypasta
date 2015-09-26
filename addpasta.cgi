@@ -55,6 +55,17 @@ print '<html lang="en-US">
 			  fjs.parentNode.insertBefore(js, fjs);
 			}(document, \'script\', \'facebook-jssdk\'));
 		</script>
+		<script type="text/javascript">
+		function changetextbox()
+		{
+		    document.getElementById("new_category").disabled=\'\';
+			if (document.getElementById("selectcategory").value != "Create New Category") {
+			    document.getElementById("new_category").disabled=\'true\';
+			} else {
+			    document.getElementById("new_category").disabled=\'\';
+			}
+		}
+		</script>
 	</head>
 	
 	<body>
@@ -91,7 +102,7 @@ print '<html lang="en-US">
 		print '<section class="adddata">
 			<div class="loginbox">Add Copy-Pasta</div>
 			<form action="adddone.cgi" method="post">
-			Category: <select>';
+			<text class="fontdec">Category&nbsp; </text><select id="selectcategory" name="selectcategory" onChange="changetextbox();"><option selected value="Create New Category">Create New Category</option>';
 			
 		my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 		my $dbh = DBI->connect($dsn,"root","");
@@ -101,21 +112,25 @@ print '<html lang="en-US">
 			if ($ref->{'category'} ne "") {
 				print " <option value=\"$ref->{'category'}\">$ref->{'category'}</option>";
 			}
-		}	
-		print '</select><br />
-		    	<input type="text" required title="Topic" placeholder="Topic"><br />
-		    	<textarea class="discussion"></textarea>
-		    	<input type="text" required title="Sources" placeholder="Sources (add them comma separated)"><br />
-		    	<input type="text" required title="Tags" placeholder="Tags (add them comma separated)"><br />
-		    	Share: <select>
+		}
+		print '</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input required type="text" title="New_Category" placeholder="New Category (max 128 characters)" id="new_category" name="new_category" maxlength="128"/><br /><br />
+		    	<text class="fontdec">Topic</text>
+		    	<input type="text" required title="Topic" placeholder="Topic (max 256 characters)" style="width:100%" name="topic" maxlength="256"><br /><br />
+		    	<text class="fontdec">Discussion</text>
+		    	<textarea placeholder="Write your Copy-Pasta! (max 1024 chars)" class="discussion" name="discussion" maxlength="1024"></textarea><br /><br />
+		    	<text class="fontdec">Sources</text>
+		    	<input type="text" title="Sources" placeholder="Sources (comma separated, max 512 characters)" style="width:100%" name="sources" maxlength="512"><br /><br />
+		    	<text class="fontdec">Tags</text>
+		    	<input type="text" title="Tags" placeholder="Tags (comma separated, max 256 characters)" style="width:100%" name="tags" maxlength="256"><br /><br />
+		    	<text class="fontdec">Share&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text> <select name="share">
 		    	<option value="public">public</option>
-		    	<option value="private">private</option>
-		    	</select>
+		    	<option selected value="private">private</option>
+		    	</select><br /><br />
 		    	<input type="submit" class="submitbox" name="submit" alt="search" value="Submit your Copy-Pasta">
 		    </form>
 		</section>
 	</body>
-	<div style="text-align:center"><text style="color:grey;font-size:12px">©2015 Vishwadeep Singh My Copy-Pasta</text></div>
+	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 Vishwadeep Singh My Copy-Pasta</text></div>
 	<hr width="65%">
 	<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 </html>';

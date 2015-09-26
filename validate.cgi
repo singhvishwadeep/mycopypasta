@@ -19,6 +19,8 @@ $session->expire('+1y');
 $cookie1 = CGI::Cookie->new(-name=>'MYCOPYPASTACOOKIE',-value=>$id);
 print $q->header(-cookie=>[$cookie1]);
 my $url="index.cgi";
+my $userid = "";
+
 if (param('User') and param('Password'))
 {
 	my $usr=param('User');
@@ -26,18 +28,17 @@ if (param('User') and param('Password'))
 	
 	my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 	my $dbh = DBI->connect($dsn,"root","");
-	my $sth = $dbh->prepare("SELECT mysession,myip FROM userdatabase where myusername='$usr' AND mypassword='$pwd' AND activeaccount=1");
+	my $sth = $dbh->prepare("SELECT id,mysession,myip FROM userdatabase where myusername='$usr' AND mypassword='$pwd' AND activeaccount=1");
 	$sth->execute();
 	my $cookie_id = "";
 	my $IP = "";
 	my $err = 1;
 	while (my $ref = $sth->fetchrow_hashref()) {
 		$err = 0;
-		if ($ref->{'mysession'} ne "") {
-			$cookie_id = $ref->{'mysession'};
-			$IP = $ref->{'myip'};
-		}
-		#print "Found a row: id = $ref->{'mypassword'}, name = $ref->{'myusername'}<br/>";
+		$cookie_id = $ref->{'mysession'};
+		$IP = $ref->{'myip'};
+		$userid = $ref->{'id'};
+#		print "Found a row: mysession = $ref->{'mysession'}, id = $ref->{'id'} -->$userid<--<br/>";
 	}
 	$sth->finish();
 	$dbh->disconnect();
@@ -47,8 +48,9 @@ if (param('User') and param('Password'))
 		$url = "loginerrcookie.cgi";
 	} else {
 		$session->param('logged_in_user_mycp',$usr);
+		$session->param('logged_in_userid_mycp',$userid);
 		$url = "loginsetcookie.cgi?username=$usr";
-		#print "Correct password<br/>";
+#		print "Correct password -$userid-<br/>";
 		$login = 1;
 	}
 } else {
