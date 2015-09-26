@@ -88,19 +88,18 @@ text.date {
 	 border-radius: 3px;
 	 font-size:10px;
 	 font-family:arial, helvetica, sans-serif; 
-	 padding: 4px 4px 4px 4px; 
 	 text-decoration:none; 
 	 display:inline-block;
 	 font-weight:bold; 
 	 color: #000000;
 	 background-color: #FF8728;
-	 padding:4px;
+	 padding:0px;
 }
 
 .category_button:hover{
 	 border: #f7b800;
 	 background-color: #ffc92b;
-	 padding:4px;
+	 padding:0px;
 }
 
 
@@ -111,7 +110,6 @@ text.date {
 	 border-radius: 3px;
 	 font-size:10px;
 	 font-family:arial, helvetica, sans-serif; 
-	 padding: 4px 4px 4px 4px; 
 	 text-decoration:none; 
 	 display:inline-block;
 	 font-weight:bold; 
