@@ -40,7 +40,7 @@
 }
 
 .adddata form input[type=text], .adddata form input[type=password] {
-    width: 300px;
+    width: 250px;
     font-size: 12px;
     padding: 5px;
     border: none;

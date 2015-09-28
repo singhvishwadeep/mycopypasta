@@ -3,6 +3,7 @@ use CGI qw(:standard);
 use CGI::Carp qw/fatalsToBrowser warningsToBrowser/;
 use CGI::Cookie;
 use CGI::Session;
+use DBI;
 
 # new cgi query
 my $q = new CGI;
@@ -30,6 +31,13 @@ if($ssid eq "") {
 		}
 	}
 }
+
+#if ($login == 0) {
+#	my $url="login.cgi";
+#	my $t=0; # time until redirect activates
+#	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+#}
+
 print '<html lang="en-US">
 	<head>
 		<title>My Copy-Pasta</title>
@@ -37,6 +45,7 @@ print '<html lang="en-US">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
 		<link rel="stylesheet" type="text/css" href="css/paragraph.css">
+		<link rel="stylesheet" type="text/css" href="css/addpasta.css">
 		<div id="fb-root"></div>
 		<script>(function(d, s, id) {
 			  var js, fjs = d.getElementsByTagName(s)[0];
@@ -45,6 +54,17 @@ print '<html lang="en-US">
 			  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.4&appId=173510282674533";
 			  fjs.parentNode.insertBefore(js, fjs);
 			}(document, \'script\', \'facebook-jssdk\'));
+		</script>
+		<script type="text/javascript">
+		function changetextbox()
+		{
+		    document.getElementById("searchcategory").disabled=\'\';
+			if (document.getElementById("selectcategory").value != "Keyword for Category") {
+			    document.getElementById("searchcategory").disabled=\'true\';
+			} else {
+			    document.getElementById("searchcategory").disabled=\'\';
+			}
+		}
 		</script>
 	</head>
 	
@@ -77,8 +97,58 @@ print '<html lang="en-US">
 				    </div>
 				</td>
 			</tr>
-		</table>
-	</body>
+		</table>';
+		
+		print '<section class="adddata">
+			<div class="loginbox">Search Copy-Pasta</div>
+			<form action="searchwild.cgi" method="post">
+				<text class="fontdec" style="font-size: 18px; font-weight: bold;">Wild search Key</text><br/>
+		    	<input type="text" title="Wild Search Key" placeholder="Wild Search Key (max 256 characters)" style="width:100%" name="wildkey" maxlength="256">
+		    	<input type="checkbox" name="global" value="global" checked="checked">Global Search<br />
+		    	<br />
+		    	<input type="submit" class="submitbox" name="submit" alt="search" value="Wild Keyword Search">
+			</form>
+			<hr width="100%" noshade style="color: skyblue;background-color: skyblue;height: 5px;border: 0;">
+			
+			<form action="searchadvance.cgi" method="post">
+			<text class="fontdec" style="font-size: 18px; font-weight: bold;">Advance Search</text><br/><br/>
+			<text class="fontdec">Search Category&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text><select id="selectcategory" name="selectcategory" onChange="changetextbox();"><option selected value="Keyword for Category">Keyword for Category</option>';
+			
+		my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+		my $dbh = DBI->connect($dsn,"root","");
+		my $sth = $dbh->prepare("SELECT distinct(category) FROM categoryinfo");
+		$sth->execute();
+		while (my $ref = $sth->fetchrow_hashref()) {
+			if ($ref->{'category'} ne "") {
+				print " <option value=\"$ref->{'category'}\">$ref->{'category'}</option>";
+			}
+		}
+		print '</select>&nbsp;&nbsp;<text class="fontdec">OR&nbsp;&nbsp;&nbsp;</text><input required type="text" title="searchcategory" placeholder="Search Category Key" id="searchcategory" name="searchcategory" maxlength="128"/><br /><br />
+		    	<text class="fontdec">Search Topic&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input required type="text" title="searchtopic" placeholder="Search Topic Key" id="searchtopic" name="searchtopic" maxlength="128"/><br /><br />
+		    	<text class="fontdec">Search Discussion&nbsp; </text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input required type="text" title="searchdiscussion" placeholder="Search Discussion Key" id="searchdiscussion" name="searchdiscussion" maxlength="128"/><br /><br />
+		    	<text class="fontdec">Search Sources&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input required type="text" title="searchdiscussion" placeholder="Search Discussion Key" id="searchdiscussion" name="searchdiscussion" maxlength="128"/><br /><br />
+		    	<text class="fontdec">Search Tags&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text><select id="selecttags" name="selecttags" onChange="changetextbox();"><option selected value="Keyword for Tags">Keyword for Tags</option>';
+			
+		my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+		my $dbh = DBI->connect($dsn,"root","");
+		my $sth = $dbh->prepare("SELECT distinct(tag) FROM taginfo");
+		$sth->execute();
+		while (my $ref = $sth->fetchrow_hashref()) {
+			if ($ref->{'tag'} ne "") {
+				print " <option value=\"$ref->{'tag'}\">$ref->{'tag'}</option>";
+			}
+		}
+		print '</select>&nbsp;&nbsp;<text class="fontdec">OR&nbsp;&nbsp;&nbsp;</text><input required type="text" title="searchtags" placeholder="Search Tags Key" id="searchtags" name="searchtags" maxlength="128"/><br /><br />
+		    	<input type="checkbox" name="global" value="global" checked="checked">Global Search<br />
+		    	<br />
+		    	<input type="submit" class="submitbox" name="submit" alt="search" value="Advance Keyword Search">
+		    </form>
+		</section>';
+		
+		
+		
+		
+	print '</body>
 	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 Vishwadeep Singh My Copy-Pasta</text></div>
 	<hr width="65%">
 	<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>

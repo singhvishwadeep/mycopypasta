@@ -45,6 +45,7 @@ sub  trim {
 }
 
 my $getuser = $session->param('logged_in_userid_mycp');
+my $getusername = $session->param('logged_in_user_mycp');
 
 my $topic=param('topic');
 my $selectcategory=param('selectcategory');
@@ -106,7 +107,7 @@ if ($topic ne "" and $discussion ne "") {
 	
 	my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 	my $dbh = DBI->connect($dsn,"root","");
-	my $sth = $dbh->prepare("INSERT into datasubmission ( user,category,topic,discussion,source,tags,date,public,showme ) VALUES ( '$getuser', '$category','$topic','$discussion','$sources','$tags',NOW(),'$share','1')");
+	my $sth = $dbh->prepare("INSERT into datasubmission ( user,username,category,topic,discussion,source,tags,date,public,showme ) VALUES ( '$getuser','$getusername', '$category','$topic','$discussion','$sources','$tags',NOW(),'$share','1')");
 	$sth->execute();
 	$sth->finish();
 	$dbh->disconnect();

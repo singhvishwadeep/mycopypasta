@@ -32,11 +32,11 @@ if($ssid eq "") {
 	}
 }
 
-if ($login == 0) {
-	my $url="login.cgi";
-	my $t=0; # time until redirect activates
-	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
-}
+#if ($login == 0) {
+#	my $url="login.cgi";
+#	my $t=0; # time until redirect activates
+#	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+#}
 
 print '<html lang="en-US">
 	<head>
@@ -92,7 +92,56 @@ print '<html lang="en-US">
 				my $dbh = DBI->connect($dsn,"root","");
 				my $getuser = $session->param('logged_in_userid_mycp');
 				my $getusername = $session->param('logged_in_user_mycp');
-				my $sth = $dbh->prepare("SELECT id,category,topic,discussion,source,tags,date,public FROM datasubmission where user='$getuser' AND showme=1 ORDER BY id DESC");
+				my $sth = $dbh->prepare("SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where user='$getuser' AND showme=1 ORDER BY id DESC");
+				$sth->execute();
+				my $turn = 0;
+				while (my $ref = $sth->fetchrow_hashref()) {
+					my $id = $ref->{'id'};
+					my $category = $ref->{'category'};
+					my $topic = $ref->{'topic'};
+					my $showuser = $ref->{'username'};
+					my $discussion = $ref->{'discussion'};
+					my $source = $ref->{'source'};
+					my $tags = $ref->{'tags'};
+					my $date = $ref->{'date'};
+					if ($ref->{'public'} == 0) {
+						$shared = "Private";
+					} else {
+						$shared = "Public";
+					}
+					print "<tr><td>";
+					if ($turn == 0) {
+						$turn = 1;
+						print "<p class=\"one\">";
+					} else {
+						$turn = 0;
+						print "<p class=\"two\">";
+					}
+					print '<img src="images/note.jpg" alt="Note View" style="width:20px;height:20px;">';
+					print "<a href=\"view.cgi\" class=\"heading_link\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"view.cgi\">";
+					print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a><br>';
+					print "<text class=\"date\">$date by <a href=\"profile.cgi\" class=\"heading_link\">$showuser</a> (Shared: $shared)</text><br/>";
+					print "<a class=\"category_button\" href=\"view.cgi\">Category: $category (0 related topics found)</a><br><br>";
+					print "<textarea readonly class=\"discussion\">$discussion</textarea><br>";
+					print '<text class="information">Sources:</text>';
+					my @values = split(',', $source);
+					foreach my $val (@values) {
+						print "<a class=\"source_button\" href=\"$val\">$val</a>&nbsp;";
+					}
+					print '<br><text class="information">Tags:</text>';
+					my @values = split(',', $tags);
+					foreach my $val (@values) {
+						print "<a class=\"tag_button\">#$val</a>&nbsp;";
+					}
+					print '<br>
+							</p>
+						</td>
+					</tr>';
+				}
+			} else {
+				my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+				my $dbh = DBI->connect($dsn,"root","");
+				my $sth = $dbh->prepare("SELECT id,username,category,topic,discussion,source,tags,date,public,user FROM datasubmission where public=1 AND showme=1 ORDER BY id DESC");
 				$sth->execute();
 				my $turn = 0;
 				while (my $ref = $sth->fetchrow_hashref()) {
@@ -116,6 +165,7 @@ print '<html lang="en-US">
 						$turn = 0;
 						print "<p class=\"two\">";
 					}
+					my $getusername = $ref->{'username'};
 					print '<img src="images/note.jpg" alt="Note View" style="width:20px;height:20px;">';
 					print "<a href=\"view.cgi\" class=\"heading_link\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"view.cgi\">";
 					print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a><br>';
