@@ -40,10 +40,12 @@ if ($login == 0 || $profileid eq "") {
 	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 }
 
-if ($session->param('logged_in_userid_mycp') ne $profileid) {
-	my $url="index.cgi";
-	my $t=0; # time until redirect activates
-	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+if ($login == 1) {
+	if ($session->param('logged_in_userid_mycp') ne $profileid) {
+		my $url="index.cgi";
+		my $t=0; # time until redirect activates
+		print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+	}
 }
 
 print '<html lang="en-US">
@@ -128,7 +130,7 @@ print '<html lang="en-US">
 				$place = $ref->{'myplace'};
 				$activeaccount = $ref->{'activeaccount'};
 				$admin = $ref->{'admin'};
-				$mydob = $ref->{'mydob'};
+				$dob = $ref->{'mydob'};
 				$identitylock = $ref->{'myidentitylock'};
 				$secquestion = $ref->{'mysecurityquestion'};
 				$secanswer = $ref->{'mysecurityanswer'};
@@ -150,21 +152,24 @@ print '<html lang="en-US">
 				<form action=\"editme.cgi\" METHOD=\"post\" ENCTYPE=\"multipart/form-data\">
 					<text class=\"fontdec\">Username</text>
 			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<input type=\"text\" style=\"width:70%;background:grey\" value=\"$username\" readonly><br /><br />
+			    		<input type=\"text\" style=\"width:70%;background:grey\" name=\"username\" value=\"$username\" readonly><br /><br />
+			    	<text class=\"fontdec\">Profile ID</text>
+			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			    		<input type=\"text\" style=\"width:70%;background:grey\" name=\"id\" value=\"$profileid\" readonly><br /><br />
 			    	<text class=\"fontdec\">Name</text>
 			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			    		<input type=\"text\" title=\"name\" placeholder=\"your name\" value=\"$name\" style=\"width:70%\" name=\"name\" id=\"name\" maxlength=\"256\" required><br /><br />
 			    	<text class=\"fontdec\">Email</text>
 			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<input type=\"text\" title=\"email\" placeholder=\"proper email address\" style=\"width:70%\" name=\"email\" id=\"email\" maxlength=\"512\" value=\"$email\" ";
+			    		<input type=\"text\" title=\"email\" placeholder=\"proper email address\" style=\"width:70%;background:grey\" name=\"email\" id=\"email\" maxlength=\"512\" value=\"$email\" ";
 			    		print 'pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" ';
-			    		print "required><br/><br/>
+			    		print "readonly><br/><br/>
 			    	<text class=\"fontdec\">Display Picture</text>
 			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<INPUT size=70 TYPE=\"file\" name=\"file\"> (optional)<br /><br />
+			    		<INPUT size=70 TYPE=\"file\" name=\"file\" accept=\".gif\"> (gif only, optional)<br /><br />
 			    	<text class=\"fontdec\">Date of birth</text>
 			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<input type=\"date\" title=\"dob\" style=\"width:70%\" name=\"dob\" id=\"dob\" value=\"$dob\" maxlength=\"128\" required><br /><br />
+			    		<input type=\"text\" title=\"dob\" style=\"width:70%\" name=\"dob\" id=\"dob\" value=\"$dob\" maxlength=\"128\" required><br /><br />
 			    	<text class=\"fontdec\">Identity Lock</text>
 			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			    		<input type=\"text\" title=\"identitylock\" placeholder=\"your identitylock (unique to your identity)\" value=\"$identitylock\" style=\"width:70%\" name=\"identitylock\" id=\"identitylock\" maxlength=\"64\" placeholder=\"any private key (64c) another than password, no special chars\" required><br /><br />
@@ -183,7 +188,7 @@ print '<html lang="en-US">
 			    	<text class=\"fontdec\">Account Type</text>
 			    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			    			<input type=\"text\" style=\"width:70%;background:grey\" value=\"$account\" readonly><br /><br />
-			    	<input type=\"submit\" class=\"submitbox\" name=\"submit\" alt=\"search\" value=\"Submit\">
+			    	<input type=\"submit\" class=\"submitbox\" name=\"submit\" alt=\"search\" value=\"Submit Changes\">
 			    </form>
 			</section>";
 		
