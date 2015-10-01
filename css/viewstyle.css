@@ -144,3 +144,15 @@ text.information {
     font-weight: bold;
     font-family: Courier;
 }
+
+ .iconDetails {
+ margin-left:2%;
+float:left; 
+width:120px;	
+} 
+
+.container2 {
+	width:100%;
+	height:auto;
+	padding:1%;
+}

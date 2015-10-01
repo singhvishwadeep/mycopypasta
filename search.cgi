@@ -88,8 +88,9 @@ print '<html lang="en-US">
 				        <li><a href="search.cgi">Search Copy-Pasta</a></li>
 				        <li><a href="contact.cgi">Contact Us</a></li>';
 				        if ($login) {
-					        print '<li><a href="logout.cgi">Logout</a></li>
-					        <li><a href="profile.cgi">Profile</a></li>';
+				        	my $getuser = $session->param('logged_in_userid_mycp');
+					        print '<li><a href="logout.cgi">Logout</a></li>';
+					        print "<li><a href=\"profile.cgi?id=$getuser\">Profile</a></li>";
 				        } else {
 				        	print '<li><a href="login.cgi">Login</a></li>';
 				        }
@@ -123,22 +124,20 @@ print '<html lang="en-US">
 				print " <option value=\"$ref->{'category'}\">$ref->{'category'}</option>";
 			}
 		}
-		print '</select>&nbsp;&nbsp;<text class="fontdec">OR&nbsp;&nbsp;&nbsp;</text><input required type="text" title="searchcategory" placeholder="Search Category Key" id="searchcategory" name="searchcategory" maxlength="128"/><br /><br />
-		    	<text class="fontdec">Search Topic&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input required type="text" title="searchtopic" placeholder="Search Topic Key" id="searchtopic" name="searchtopic" maxlength="128"/><br /><br />
-		    	<text class="fontdec">Search Discussion&nbsp; </text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input required type="text" title="searchdiscussion" placeholder="Search Discussion Key" id="searchdiscussion" name="searchdiscussion" maxlength="128"/><br /><br />
-		    	<text class="fontdec">Search Sources&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input required type="text" title="searchdiscussion" placeholder="Search Discussion Key" id="searchdiscussion" name="searchdiscussion" maxlength="128"/><br /><br />
+		print '</select>&nbsp;&nbsp;<text class="fontdec">OR&nbsp;&nbsp;&nbsp;</text><input type="text" title="searchcategory" placeholder="Search Category Key" id="searchcategory" name="searchcategory" maxlength="128"/><br /><br />
+		    	<text class="fontdec">Search Topic&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" title="searchtopic" placeholder="Search Topic Key" id="searchtopic" name="searchtopic" maxlength="128"/><br /><br />
+		    	<text class="fontdec">Search Discussion&nbsp; </text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" title="searchdiscussion" placeholder="Search Discussion Key" id="searchdiscussion" name="searchdiscussion" maxlength="128"/><br /><br />
+		    	<text class="fontdec">Search Sources&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </text>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" title="searchdiscussion" placeholder="Search Discussion Key" id="searchdiscussion" name="searchdiscussion" maxlength="128"/><br /><br />
 		    	<text class="fontdec">Search Tags&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text><select id="selecttags" name="selecttags" onChange="changetextbox();"><option selected value="Keyword for Tags">Keyword for Tags</option>';
 			
-		my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
-		my $dbh = DBI->connect($dsn,"root","");
-		my $sth = $dbh->prepare("SELECT distinct(tag) FROM taginfo");
+		$sth = $dbh->prepare("SELECT distinct(tag) FROM taginfo");
 		$sth->execute();
 		while (my $ref = $sth->fetchrow_hashref()) {
 			if ($ref->{'tag'} ne "") {
 				print " <option value=\"$ref->{'tag'}\">$ref->{'tag'}</option>";
 			}
 		}
-		print '</select>&nbsp;&nbsp;<text class="fontdec">OR&nbsp;&nbsp;&nbsp;</text><input required type="text" title="searchtags" placeholder="Search Tags Key" id="searchtags" name="searchtags" maxlength="128"/><br /><br />
+		print '</select>&nbsp;&nbsp;<text class="fontdec">OR&nbsp;&nbsp;&nbsp;</text><input type="text" title="searchtags" placeholder="Search Tags Key" id="searchtags" name="searchtags" maxlength="128"/><br /><br />
 		    	<input type="checkbox" name="global" value="global" checked="checked">Global Search<br />
 		    	<br />
 		    	<input type="submit" class="submitbox" name="submit" alt="search" value="Advance Keyword Search">
@@ -149,7 +148,7 @@ print '<html lang="en-US">
 		
 		
 	print '</body>
-	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 Vishwadeep Singh My Copy-Pasta</text></div>
+	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 My Blue Sky Labs, powered by Vishwadeep Singh</text></div>
 	<hr width="65%">
 	<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 </html>';

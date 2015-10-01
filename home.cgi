@@ -3,6 +3,7 @@ use CGI qw(:standard);
 use CGI::Carp qw/fatalsToBrowser warningsToBrowser/;
 use CGI::Cookie;
 use CGI::Session;
+use DBI;
 
 # new cgi query
 my $q = new CGI;
@@ -14,6 +15,16 @@ print $q->header;
 my $err = 0;
 # proper logged in?
 my $login = 0;
+
+my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+my $dbh = DBI->connect($dsn,"root","");
+my $ip = $ENV{REMOTE_ADDR};
+my $sth = $dbh->prepare("INSERT into iphold ( ip,date ) VALUES ( '$ip',NOW())");
+$sth->execute();
+$sth->finish();
+$dbh->disconnect();
+
+
 if($ssid eq "") {
 	# empty/no cookie found. Hence not logged in
 } else {
@@ -71,8 +82,9 @@ print '<html lang="en-US">
 				        <li><a href="search.cgi">Search Copy-Pasta</a></li>
 				        <li><a href="contact.cgi">Contact Us</a></li>';
 				        if ($login) {
-					        print '<li><a href="logout.cgi">Logout</a></li>
-					        <li><a href="profile.cgi">Profile</a></li>';
+				        	my $getuser = $session->param('logged_in_userid_mycp');
+					        print '<li><a href="logout.cgi">Logout</a></li>';
+					        print "<li><a href=\"profile.cgi?id=$getuser\">Profile</a></li>";
 				        } else {
 				        	print '<li><a href="login.cgi">Login</a></li>';
 				        }
@@ -82,23 +94,17 @@ print '<html lang="en-US">
 			</tr>
 			<tr>
 				<td>
-					<img src="images/profile.jpg" alt="Edit" style="width:100%;height:300px;">
-				</td>
-			</tr>
-			<tr>
-				<td>
-				<p>My Copy-Pasta.
-					This creation is inspired by several thoughts. We come across with different information daily, but, we dont keep track of it. As you cannot trust on human mind for storing the information for longer time. As i had seen lot of branches of science and dealing with different set every time, which makes me learn new things daily. But, slowly i started
-					forgetting these things and i started loosing track of them. Hence, i thought of building a platform, where you can save anything you want and keep it for future purpose.
-				</p>
+				<p>My Copy-Pasta. This creation is inspired by several thoughts. It is idea of ideas. We come across with different information daily, but, we don&#39;t keep track of it. As you cannot trust on human mind for storing the information for longer time. Here you can save your daily find outs, logics in your own words and understanding, important web links or bookmarks, important programming syntaxes/uses, manuals, definitions, important dates, and many other things. I had seen lot of branches of science and dealing with different set daily, which makes me learn new things daily. But, slowly I start forgetting these things and loosing track of them. Hence, I thought of building a platform, where you can save anything you want and keep it for future purpose.</p>
+				<p>This tool is written in cgi-perl from scratch and is done in 2 weeks of time frame. For usage, you need to register. After account being activated by admin, you will be able to use it and can start adding your copy-pasta. You can save your copy-pasta in private/public set. Private set can only be accessed by you only, whereas public set can be accessed by any one (any registered user).</p>
+				<p>We are also working on some other projects like pathway traversing tool in C and C++ and Money Management Tool (named &quot;Aukaat&quot;) in cgi-perl. If anyone interested to work in the projects can contact for the same anytime to <a href="mailto:myblueskylabs@gmail.com?Subject=Hello%20My%20Copy%20Pasta%20Team" target="_top">myblueskylabs@gmail.com</a>. We are also looking for investers/sponcers/partners to make this domain live and functional.</1> 
+                                <div class="fb-comments" data-href="http://mycopypasta.myartsonline.com/" data-numposts="100"></div>
 				</td>
 			</tr>
 		</table>
 	</body>
-	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 Vishwadeep Singh My Copy-Pasta</text></div>
+	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">&copy;2015 My Blue Sky Labs, powered by Vishwadeep Singh</text></div>
 	<hr width="65%">
 	<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 </html>';
-
 
 1;

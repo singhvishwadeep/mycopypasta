@@ -4,6 +4,7 @@ use CGI::Carp qw/fatalsToBrowser warningsToBrowser/;
 use CGI::Cookie;
 use CGI::Session;
 use DBI;
+use HTML::Entities;
 
 # new cgi query
 my $q = new CGI;
@@ -92,8 +93,10 @@ print '<html lang="en-US">
 				my $dbh = DBI->connect($dsn,"root","");
 				my $getuser = $session->param('logged_in_userid_mycp');
 				my $getusername = $session->param('logged_in_user_mycp');
-				my $sth = $dbh->prepare("SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where user='$getuser' AND showme=1 ORDER BY id DESC");
+				my $sth = $dbh->prepare("SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where (user='$getuser' OR public=1) AND showme=1 ORDER BY id DESC");
 				$sth->execute();
+				my $countres = $sth->rows;
+				print "<tr><td><a class=\"edit_button\">Found $countres Results</a><br><br></td></tr>";
 				my $turn = 0;
 				while (my $ref = $sth->fetchrow_hashref()) {
 					my $id = $ref->{'id'};
@@ -121,7 +124,9 @@ print '<html lang="en-US">
 					print "<a href=\"view.cgi\" class=\"heading_link\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"view.cgi\">";
 					print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a><br>';
 					print "<text class=\"date\">$date by <a href=\"profile.cgi\" class=\"heading_link\">$showuser</a> (Shared: $shared)</text><br/>";
-					print "<a class=\"category_button\" href=\"view.cgi\">Category: $category (0 related topics found)</a><br><br>";
+					my $string = "categoryview.cgi?showmycategory=$category";
+					encode_entities($string);
+					print "<a class=\"category_button\" href=\"$string\" target=\"_blank\">Category: $category</a><br><br>";
 					print "<textarea readonly class=\"discussion\">$discussion</textarea><br>";
 					print '<text class="information">Sources:</text>';
 					my @values = split(',', $source);
@@ -131,7 +136,9 @@ print '<html lang="en-US">
 					print '<br><text class="information">Tags:</text>';
 					my @values = split(',', $tags);
 					foreach my $val (@values) {
-						print "<a class=\"tag_button\">#$val</a>&nbsp;";
+						my $string = "tagview.cgi?showmytag=$val";
+   						encode_entities($string);
+						print "<a class=\"tag_button\" href=\"$string\" target=\"_blank\">$val</a>&nbsp;";
 					}
 					print '<br>
 							</p>
@@ -143,6 +150,8 @@ print '<html lang="en-US">
 				my $dbh = DBI->connect($dsn,"root","");
 				my $sth = $dbh->prepare("SELECT id,username,category,topic,discussion,source,tags,date,public,user FROM datasubmission where public=1 AND showme=1 ORDER BY id DESC");
 				$sth->execute();
+				my $countres = $sth->rows;
+				print "<tr><td><a class=\"edit_button\">Found $countres Results</a><br><br></td></tr>";
 				my $turn = 0;
 				while (my $ref = $sth->fetchrow_hashref()) {
 					my $id = $ref->{'id'};
@@ -170,7 +179,9 @@ print '<html lang="en-US">
 					print "<a href=\"view.cgi\" class=\"heading_link\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"view.cgi\">";
 					print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a><br>';
 					print "<text class=\"date\">$date by <a href=\"profile.cgi\" class=\"heading_link\">$getusername</a> (Shared: $shared)</text><br/>";
-					print "<a class=\"category_button\" href=\"view.cgi\">Category: $category (0 related topics found)</a><br><br>";
+					my $string = "categoryview.cgi?showmycategory=$category";
+					encode_entities($string);
+					print "<a class=\"category_button\" href=\"$string\" target=\"_blank\">Category: $category</a><br><br>";
 					print "<textarea readonly class=\"discussion\">$discussion</textarea><br>";
 					print '<text class="information">Sources:</text>';
 					my @values = split(',', $source);
@@ -180,7 +191,9 @@ print '<html lang="en-US">
 					print '<br><text class="information">Tags:</text>';
 					my @values = split(',', $tags);
 					foreach my $val (@values) {
-						print "<a class=\"tag_button\">#$val</a>&nbsp;";
+						my $string = "tagview.cgi?showmytag=$val";
+   						encode_entities($string);
+						print "<a class=\"tag_button\" href=\"$string\" target=\"_blank\">$val</a>&nbsp;";
 					}
 					print '<br>
 							</p>
@@ -190,7 +203,7 @@ print '<html lang="en-US">
 			}
 		print '</table>
 	</body>
-	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 Vishwadeep Singh My Copy-Pasta</text></div>
+	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 My Blue Sky Labs, powered by Vishwadeep Singh</text></div>
 	<hr width="65%">
 	<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 </html>';

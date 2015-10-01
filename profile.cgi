@@ -3,6 +3,7 @@ use CGI qw(:standard);
 use CGI::Carp qw/fatalsToBrowser warningsToBrowser/;
 use CGI::Cookie;
 use CGI::Session;
+use DBI;
 
 # new cgi query
 my $q = new CGI;
@@ -12,6 +13,8 @@ my $ssid = $q->cookie('MYCOPYPASTACOOKIE');
 print $q->header;
 # login error or not
 my $err = 0;
+
+
 # proper logged in?
 my $login = 0;
 
@@ -37,7 +40,17 @@ if ($login == 0) {
 	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 }
 
-my $getuser = $session->param('logged_in_user_mycp');
+my $profileid = $q->param('id');
+
+if ($profileid eq "") {
+	$profileid = $session->param('logged_in_userid_mycp');
+}
+
+my $message = "";
+
+if ($session->param('logged_in_userid_mycp') eq $profileid) {
+	$message = "(Current User) <a class=\"edit_button\" href=\"editprofile.cgi?id=$profileid\"><img src=\"images/edit.jpg\" alt=\"Edit\" style=\"width:10px;height:10px;padding-right:3px\">Edit</a>";
+}
 
 print '<html lang="en-US">
 	<head>
@@ -45,6 +58,8 @@ print '<html lang="en-US">
 		<link rel="shortcut icon" href="images/newlogo.ico">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
+		<link rel="stylesheet" type="text/css" href="css/registerpasta.css">
+		<link rel="stylesheet" type="text/css" href="css/addpasta.css">
 		<div id="fb-root"></div>
 		<script>(function(d, s, id) {
 			  var js, fjs = d.getElementsByTagName(s)[0];
@@ -76,18 +91,125 @@ print '<html lang="en-US">
 				        <li><a href="search.cgi">Search Copy-Pasta</a></li>
 				        <li><a href="contact.cgi">Contact Us</a></li>';
 				        if ($login) {
-					        print '<li><a href="logout.cgi">Logout</a></li>
-					        <li><a href="profile.cgi">Profile</a></li>';
+				        	my $getuser = $session->param('logged_in_userid_mycp');
+					        print '<li><a href="logout.cgi">Logout</a></li>';
+					        print "<li><a href=\"profile.cgi?id=$getuser\">Profile</a></li>";
 				        } else {
 				        	print '<li><a href="login.cgi">Login</a></li>';
 				        }
 				      print '</ul>
 				    </div>
 				</td>
-			</tr>
-		</table>
-	</body>
-	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 Vishwadeep Singh My Copy-Pasta</text></div>
+			</tr>';
+			
+			my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+			my $dbh = DBI->connect($dsn,"root","");
+			my $sth = $dbh->prepare("SELECT myusername,mydob,name,displaypic,registereddate,myemail,myprofession,myplace,activeaccount,admin FROM userdatabase where id='$profileid' and deleted=0");
+			$sth->execute();
+			my $countres = $sth->rows;
+			if ($countres == 0) {
+				print "<tr><td><font color=\"red\">No Pofile Found.</font></td></tr></table>";
+			} else {
+				my $name = "";
+				my $myusername = "";
+				my $displaypic = "";
+				my $registereddate = "";
+				my $myemail = "";
+				my $myprofession = "";
+				my $myplace = "";
+				my $activeaccount = "";
+				my $admin = "";
+				my $mydob = "";
+				while (my $ref = $sth->fetchrow_hashref()) {
+					$myusername = $ref->{'myusername'};
+					$name = $ref->{'name'};
+					$displaypic = $ref->{'displaypic'};
+					$registereddate = $ref->{'registereddate'};
+					$myemail = $ref->{'myemail'};
+					$myprofession = $ref->{'myprofession'};
+					$myplace = $ref->{'myplace'};
+					$activeaccount = $ref->{'activeaccount'};
+					$admin = $ref->{'admin'};
+					$mydob = $ref->{'mydob'};
+					break;
+				}
+				$sth->finish();
+				$dbh->disconnect();
+				my $account = "";
+				if ($admin == 0) {
+					$account = "guest account";
+				} elsif ($admin == 1) {
+					$account = "admin account";
+				} else {
+					$account = "normal user account";
+				}
+				
+				my $acntstate = "";
+				my $acntcol = "white";
+				
+				if ($activeaccount == 0) {
+					$acntstate = "Inactive Account";
+					$acntcol = "red";
+				} else {
+					$acntstate = "Active Account";
+					$acntcol = "green";
+				}
+				
+				
+				
+				print "</table><section class=\"registerdata\">
+						<div class=\"loginbox\">Copy-Pasta Profile of <font color=black>$name</font> $message</div>
+						<div class='container2'>
+							<div>
+								<img width=\"120px\" alt=\"$myusername\" border=\"2\" class='iconDetails' src=\"get_blob.cgi?id=$profileid\">
+				    		</div>	
+							<div style='margin-left:60px;'>
+			    				<form>
+									<text class=\"fontdec\">Username</text>
+					    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					    			<input type=\"text\" style=\"width:60%\" value=\"$myusername\" readonly><br /><br />
+					    			
+					    			<text class=\"fontdec\">Name</text>
+					    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					    			<input type=\"text\" style=\"width:60%\" value=\"$name\" readonly><br /><br />
+					    			
+					    			<text class=\"fontdec\">Email</text>
+					    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					    			<input type=\"text\" style=\"width:60%\" value=\"$myemail\" readonly><br /><br />
+					    			
+					    			<text class=\"fontdec\">Date of Birth</text>
+					    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					    			<input type=\"text\" style=\"width:60%\" value=\"$mydob\" readonly><br /><br />
+					    			
+					    			<text class=\"fontdec\">Occupation</text>
+					    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					    			<input type=\"text\" style=\"width:60%\" value=\"$myprofession\" readonly><br /><br />
+					    			
+					    			<text class=\"fontdec\">Place</text>
+					    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					    			<input type=\"text\" style=\"width:60%\" value=\"$myplace\" readonly><br /><br />
+					    			
+					    			<text class=\"fontdec\">Account Reg. Date</text>
+					    				&nbsp;&nbsp;
+					    			<input type=\"text\" style=\"width:60%\" value=\"$registereddate\" readonly><br /><br />
+					    			
+					    			<text class=\"fontdec\">Account Type</text>
+					    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					    			<input type=\"text\" style=\"width:60%\" value=\"$account\" readonly><br /><br />
+					    			
+					    			<text class=\"fontdec\">Account State</text>
+					    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					    			<input type=\"text\" style=\"width:60%;background:$acntcol\" value=\"$acntstate\" readonly><br /><br />
+					    			
+					    			</form>
+					    		</div>
+							</div>
+			    			</section>";
+			}
+			$sth->finish();
+			$dbh->disconnect();
+		print '</body>
+	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 My Blue Sky Labs, powered by Vishwadeep Singh</text></div>
 	<hr width="65%">
 	<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 </html>';

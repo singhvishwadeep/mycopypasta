@@ -69,8 +69,9 @@ print '<html lang="en-US">
 				        <li><a href="search.cgi">Search Copy-Pasta</a></li>
 				        <li><a href="contact.cgi">Contact Us</a></li>';
 				        if ($login) {
-					        print '<li><a href="logout.cgi">Logout</a></li>
-					        <li><a href="profile.cgi">Profile</a></li>';
+				        	my $getuser = $session->param('logged_in_userid_mycp');
+					        print '<li><a href="logout.cgi">Logout</a></li>';
+					        print "<li><a href=\"profile.cgi?id=$getuser\">Profile</a></li>";
 				        } else {
 				        	print '<li><a href="login.cgi">Login</a></li>';
 				        }
@@ -88,7 +89,7 @@ print '<html lang="en-US">
 		</tr>
 		</table>
 	</body>
-	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 Vishwadeep Singh My Copy-Pasta</text></div>
+	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 My Blue Sky Labs, powered by Vishwadeep Singh</text></div>
 	<hr width="65%">
 	<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 </html>';
