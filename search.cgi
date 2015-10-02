@@ -36,6 +36,7 @@ if($ssid eq "") {
 #	my $url="login.cgi";
 #	my $t=0; # time until redirect activates
 #	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+#	die;
 #}
 
 print '<html lang="en-US">

@@ -38,6 +38,7 @@ if($ssid eq "") {
 #	my $url="login.cgi";
 #	my $t=0; # time until redirect activates
 #	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+#	die;
 #}
 
 print '<html lang="en-US">
@@ -90,14 +91,22 @@ print '<html lang="en-US">
 		</table>
 			<table class="box" align="center" width="65%">';
 			if ($showmytag ne "") {
-				$dsn = "DBI:mysql:database=mycopypasta;host=localhost";
-				$dbh = DBI->connect($dsn,"root","");
+				
 				if ($login == 1) {
 						my $getuser = $session->param('logged_in_userid_mycp');
 						my $getusername = $session->param('logged_in_user_mycp');
+						my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+						my $dbh = DBI->connect($dsn,"root","");
+						my $query = "select id,myusername from userdatabase";
+						my $sth = $dbh->prepare($query);
+						$sth->execute();
+						my %userinfo;
+						while (my $ref = $sth->fetchrow_hashref()) {
+							$userinfo{$ref->{'myusername'}} = $ref->{'id'};
+						}
 						
 						
-						my $sth = $dbh->prepare("SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where (user='$getuser' OR public=1) AND showme=1 ORDER BY id DESC");
+						$sth = $dbh->prepare("SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where (user='$getuser' OR public=1) AND showme=1 ORDER BY id DESC");
 						$sth->execute();
 						my $countres = 0;
 						while (my $ref = $sth->fetchrow_hashref()) {
@@ -159,7 +168,7 @@ print '<html lang="en-US">
 							print '<img src="images/note.jpg" alt="Note View" style="width:20px;height:20px;">';
 							print "<a href=\"view.cgi\" class=\"heading_link\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"view.cgi\">";
 							print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a><br>';
-							print "<text class=\"date\">$date by <a href=\"profile.cgi\" class=\"heading_link\">$showuser</a> (Shared: $shared)</text><br/>";
+							print "<text class=\"date\">$date by <a href=\"profile.cgi?id=$userinfo{$showuser}\" class=\"heading_link\" target=\"_blank\">$showuser</a> (Shared: $shared)</text><br/>";
 							my $string = "categoryview.cgi?showmycategory=$category";
 							encode_entities($string);
 							print "<a class=\"category_button\" href=\"$string\" target=\"_blank\">Category: $category</a><br><br>";
@@ -184,7 +193,15 @@ print '<html lang="en-US">
 					} else {
 						my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 						my $dbh = DBI->connect($dsn,"root","");
-						my $sth = $dbh->prepare("SELECT id,username,category,topic,discussion,source,tags,date,public,user FROM datasubmission where public=1 AND showme=1 ORDER BY id DESC");
+						my $query = "select id,myusername from userdatabase";
+						my $sth = $dbh->prepare($query);
+						$sth->execute();
+						my %userinfo;
+						while (my $ref = $sth->fetchrow_hashref()) {
+							$userinfo{$ref->{'myusername'}} = $ref->{'id'};
+						}
+
+						$sth = $dbh->prepare("SELECT id,username,category,topic,discussion,source,tags,date,public,user FROM datasubmission where public=1 AND showme=1 ORDER BY id DESC");
 						$sth->execute();
 						my $countres = $sth->rows;
 						print "<tr><td><a class=\"edit_button\">Found $countres Results</a><br><br></td></tr>";
@@ -229,7 +246,7 @@ print '<html lang="en-US">
 							print '<img src="images/note.jpg" alt="Note View" style="width:20px;height:20px;">';
 							print "<a href=\"view.cgi\" class=\"heading_link\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"view.cgi\">";
 							print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a><br>';
-							print "<text class=\"date\">$date by <a href=\"profile.cgi\" class=\"heading_link\">$getusername</a> (Shared: $shared)</text><br/>";
+							print "<text class=\"date\">$date by <a href=\"profile.cgi?id=$userinfo{$getusername}\" class=\"heading_link\" target=\"_blank\">$getusername</a> (Shared: $shared)</text><br/>";
 							my $string = "categoryview.cgi?showmycategory=$category";
 							encode_entities($string);
 							print "<a class=\"category_button\" href=\"$string\" target=\"_blank\">Category: $category</a><br><br>";

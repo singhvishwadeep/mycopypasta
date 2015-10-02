@@ -5,6 +5,7 @@ use CGI::Cookie;
 use CGI::Session;
 use DBI;
 use HTML::Entities;
+use Scalar::Util qw(looks_like_number);
 
 # new cgi query
 my $q = new CGI;
@@ -39,13 +40,28 @@ if($ssid eq "") {
 #	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 #}
 
+
+my $limit = $q->param('limit');
+my $offset = $q->param('offset');
+
+if (looks_like_number($limit)) {
+  
+} else {
+	$limit = 10;
+}
+
+if (looks_like_number($offset)) {
+  
+} else {
+	$offset = 0;
+}
+
 print '<html lang="en-US">
 	<head>
 		<title>My Copy-Pasta</title>
 		<link rel="shortcut icon" href="images/newlogo.ico">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
-		<link rel="stylesheet" type="text/css" href="css/paragraph.css">
 		<div id="fb-root"></div>
 		<script>(function(d, s, id) {
 			  var js, fjs = d.getElementsByTagName(s)[0];
@@ -91,12 +107,48 @@ print '<html lang="en-US">
 			if ($login == 1) {
 				my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 				my $dbh = DBI->connect($dsn,"root","");
+				my $query = "select id,myusername from userdatabase";
+				my $sth = $dbh->prepare($query);
+				$sth->execute();
+				my %userinfo;
+				while (my $ref = $sth->fetchrow_hashref()) {
+					$userinfo{$ref->{'myusername'}} = $ref->{'id'};
+				}
 				my $getuser = $session->param('logged_in_userid_mycp');
 				my $getusername = $session->param('logged_in_user_mycp');
-				my $sth = $dbh->prepare("SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where (user='$getuser' OR public=1) AND showme=1 ORDER BY id DESC");
+				$query = "SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where (user='$getuser') AND showme=1 ORDER BY id DESC";
+				$sth = $dbh->prepare($query);
 				$sth->execute();
-				my $countres = $sth->rows;
-				print "<tr><td><a class=\"edit_button\">Found $countres Results</a><br><br></td></tr>";
+				my $total_results = $sth->rows;
+				$query = "SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where (user='$getuser') AND showme=1 ORDER BY id DESC LIMIT $limit OFFSET $offset";
+				$sth = $dbh->prepare($query);
+				$sth->execute();
+				my $current_results = $sth->rows;
+				my $start = $offset + 1;
+				my $end = $offset + $current_results;
+				
+				my $prevclass = "";
+				my $prevlink = "";
+				if ($offset == 0) {
+					$prevclass = "button_disabled";
+				} else {
+					$prevclass = "button";
+					my $temp = $offset - $limit;
+					$prevlink = "view.cgi?limit=$limit&offset=$temp";
+				}
+				
+				my $nextclass = "";
+				my $nextlink = "";
+				if ($current_results + $offset >= $total_results) {
+					$nextclass = "button_disabled";
+				} else {
+					$nextclass = "button";
+					my $temp = $offset + $limit;
+					$nextlink = "view.cgi?limit=$limit&offset=$temp";
+				}
+				
+				print "<tr><td><a class=\"edit_button\">Displaying $current_results out of $total_results Results ($start - $end)</a><br><br></td></tr>";
+				print "<tr><td><div style=\"text-align:center\"><a href=\"$prevlink\" class=\"$prevclass\">< Previous</a> | <a href=\"$nextlink\" class=\"$nextclass\">Next ></a></div></td></tr>";
 				my $turn = 0;
 				while (my $ref = $sth->fetchrow_hashref()) {
 					my $id = $ref->{'id'};
@@ -123,7 +175,7 @@ print '<html lang="en-US">
 					print '<img src="images/note.jpg" alt="Note View" style="width:20px;height:20px;">';
 					print "<a href=\"view.cgi\" class=\"heading_link\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"view.cgi\">";
 					print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a><br>';
-					print "<text class=\"date\">$date by <a href=\"profile.cgi\" class=\"heading_link\">$showuser</a> (Shared: $shared)</text><br/>";
+					print "<text class=\"date\">$date by <a href=\"profile.cgi?id=$userinfo{$showuser}\" class=\"heading_link\" target=\"_blank\">$showuser</a> (Shared: $shared)</text><br/>";
 					my $string = "categoryview.cgi?showmycategory=$category";
 					encode_entities($string);
 					print "<a class=\"category_button\" href=\"$string\" target=\"_blank\">Category: $category</a><br><br>";
@@ -145,13 +197,50 @@ print '<html lang="en-US">
 						</td>
 					</tr>';
 				}
+				print "<tr><td><div style=\"text-align:center\"><a href=\"$prevlink\" class=\"$prevclass\">< Previous</a> | <a href=\"$nextlink\" class=\"$nextclass\">Next ></a></div></td></tr>";
 			} else {
 				my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 				my $dbh = DBI->connect($dsn,"root","");
-				my $sth = $dbh->prepare("SELECT id,username,category,topic,discussion,source,tags,date,public,user FROM datasubmission where public=1 AND showme=1 ORDER BY id DESC");
+				my $query = "select id,myusername from userdatabase";
+				my $sth = $dbh->prepare($query);
 				$sth->execute();
-				my $countres = $sth->rows;
-				print "<tr><td><a class=\"edit_button\">Found $countres Results</a><br><br></td></tr>";
+				my %userinfo;
+				while (my $ref = $sth->fetchrow_hashref()) {
+					$userinfo{$ref->{'myusername'}} = $ref->{'id'};
+				}
+				$sth = $dbh->prepare("SELECT id,username,category,topic,discussion,source,tags,date,public,user FROM datasubmission where public=1 AND showme=1 ORDER BY id DESC");
+				$sth->execute();
+				my $total_results = $sth->rows;
+				$query = "SELECT id,username,category,topic,discussion,source,tags,date,public,user FROM datasubmission where public=1 AND showme=1 ORDER BY id DESC LIMIT $limit OFFSET $offset";
+				$sth = $dbh->prepare($query);
+				$sth->execute();
+				my $current_results = $sth->rows;
+				my $start = $offset + 1;
+				my $end = $offset + $current_results;
+				
+				my $prevclass = "";
+				my $prevlink = "";
+				if ($offset == 0) {
+					$prevclass = "button_disabled";
+				} else {
+					$prevclass = "button";
+					my $temp = $offset - $limit;
+					$prevlink = "view.cgi?limit=$limit&offset=$temp";
+				}
+				
+				my $nextclass = "";
+				my $nextlink = "";
+				if ($current_results + $offset >= $total_results) {
+					$nextclass = "button_disabled";
+				} else {
+					$nextclass = "button";
+					my $temp = $offset + $limit;
+					$nextlink = "view.cgi?limit=$limit&offset=$temp";
+				}
+				
+				print "<tr><td><a class=\"edit_button\">Displaying $current_results out of $total_results Results ($start - $end)</a><br><br></td></tr>";
+				print "<tr><td><div style=\"text-align:center\"><a href=\"$prevlink\" class=\"$prevclass\">< Previous</a> | <a href=\"$nextlink\" class=\"$nextclass\">Next ></a></div></td></tr>";
+				
 				my $turn = 0;
 				while (my $ref = $sth->fetchrow_hashref()) {
 					my $id = $ref->{'id'};
@@ -178,7 +267,7 @@ print '<html lang="en-US">
 					print '<img src="images/note.jpg" alt="Note View" style="width:20px;height:20px;">';
 					print "<a href=\"view.cgi\" class=\"heading_link\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"view.cgi\">";
 					print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a><br>';
-					print "<text class=\"date\">$date by <a href=\"profile.cgi\" class=\"heading_link\">$getusername</a> (Shared: $shared)</text><br/>";
+					print "<text class=\"date\">$date by <a href=\"profile.cgi?id=$userinfo{$getusername}\" class=\"heading_link\" target=\"_blank\">$getusername</a> (Shared: $shared)</text><br/>";
 					my $string = "categoryview.cgi?showmycategory=$category";
 					encode_entities($string);
 					print "<a class=\"category_button\" href=\"$string\" target=\"_blank\">Category: $category</a><br><br>";

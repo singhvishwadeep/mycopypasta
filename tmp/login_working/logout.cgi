@@ -20,3 +20,4 @@ print "<httpCookies httpOnlyCookies=\"true\" requireSSL=\"false\" />";
 my $url="index.cgi";
 my $t=1; # time until redirect activates
 print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+1;

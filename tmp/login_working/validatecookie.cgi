@@ -25,6 +25,7 @@ if ($session ne "") {
 			my $url="welcome.html";
 			my $t=1; # time until redirect activates
 			print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+			die;
 		} elsif ($session->param('activelogin') eq "-1") {
 			print "wrong password\n";
 			# wrong password
