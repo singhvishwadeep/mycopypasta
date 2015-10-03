@@ -47,19 +47,12 @@ sub  trim {
 #}
 
 
-my $limit = $q->param('limit');
-my $offset = $q->param('offset');
+my $viewid = $q->param('id');
 
-if (looks_like_number($limit)) {
+if (looks_like_number($viewid)) {
   
 } else {
-	$limit = 10;
-}
-
-if (looks_like_number($offset)) {
-  
-} else {
-	$offset = 0;
+	$viewid = 0;
 }
 
 print '<html lang="en-US">
@@ -122,39 +115,9 @@ print '<html lang="en-US">
 				}
 				my $getuser = $session->param('logged_in_userid_mycp');
 				my $getusername = $session->param('logged_in_user_mycp');
-				$query = "SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where (user='$getuser') AND showme=1 ORDER BY id DESC";
+				$query = "SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where (user='$getuser' OR public=1) AND showme=1 AND id='$viewid' ORDER BY id DESC";
 				$sth = $dbh->prepare($query);
 				$sth->execute();
-				my $total_results = $sth->rows;
-				$query = "SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where (user='$getuser') AND showme=1 ORDER BY id DESC LIMIT $limit OFFSET $offset";
-				$sth = $dbh->prepare($query);
-				$sth->execute();
-				my $current_results = $sth->rows;
-				my $start = $offset + 1;
-				my $end = $offset + $current_results;
-				
-				my $prevclass = "";
-				my $prevlink = "";
-				if ($offset == 0) {
-					$prevclass = "button_disabled";
-				} else {
-					$prevclass = "button";
-					my $temp = $offset - $limit;
-					$prevlink = "view.cgi?limit=$limit&offset=$temp";
-				}
-				
-				my $nextclass = "";
-				my $nextlink = "";
-				if ($current_results + $offset >= $total_results) {
-					$nextclass = "button_disabled";
-				} else {
-					$nextclass = "button";
-					my $temp = $offset + $limit;
-					$nextlink = "view.cgi?limit=$limit&offset=$temp";
-				}
-				
-				print "<tr><td><a class=\"edit_button\">Displaying $current_results out of $total_results Results ($start - $end)</a><br><br></td></tr>";
-				print "<tr><td><div style=\"text-align:center\"><a href=\"$prevlink\" class=\"$prevclass\">< Previous</a> | <a href=\"$nextlink\" class=\"$nextclass\">Next ></a></div></td></tr>";
 				my $turn = 0;
 				while (my $ref = $sth->fetchrow_hashref()) {
 					my $id = $ref->{'id'};
@@ -205,7 +168,6 @@ print '<html lang="en-US">
 						</td>
 					</tr>';
 				}
-				print "<tr><td><div style=\"text-align:center\"><a href=\"$prevlink\" class=\"$prevclass\">< Previous</a> | <a href=\"$nextlink\" class=\"$nextclass\">Next ></a></div></td></tr>";
 			} else {
 				my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 				my $dbh = DBI->connect($dsn,"root","");
@@ -216,39 +178,9 @@ print '<html lang="en-US">
 				while (my $ref = $sth->fetchrow_hashref()) {
 					$userinfo{$ref->{'myusername'}} = $ref->{'id'};
 				}
-				$sth = $dbh->prepare("SELECT id,username,category,topic,discussion,source,tags,date,public,user FROM datasubmission where public=1 AND showme=1 ORDER BY id DESC");
-				$sth->execute();
-				my $total_results = $sth->rows;
-				$query = "SELECT id,username,category,topic,discussion,source,tags,date,public,user FROM datasubmission where public=1 AND showme=1 ORDER BY id DESC LIMIT $limit OFFSET $offset";
+				$query = "SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where public=1 AND showme=1 AND id='$viewid' ORDER BY id DESC";
 				$sth = $dbh->prepare($query);
 				$sth->execute();
-				my $current_results = $sth->rows;
-				my $start = $offset + 1;
-				my $end = $offset + $current_results;
-				
-				my $prevclass = "";
-				my $prevlink = "";
-				if ($offset == 0) {
-					$prevclass = "button_disabled";
-				} else {
-					$prevclass = "button";
-					my $temp = $offset - $limit;
-					$prevlink = "view.cgi?limit=$limit&offset=$temp";
-				}
-				
-				my $nextclass = "";
-				my $nextlink = "";
-				if ($current_results + $offset >= $total_results) {
-					$nextclass = "button_disabled";
-				} else {
-					$nextclass = "button";
-					my $temp = $offset + $limit;
-					$nextlink = "view.cgi?limit=$limit&offset=$temp";
-				}
-				
-				print "<tr><td><a class=\"edit_button\">Displaying $current_results out of $total_results Results ($start - $end)</a><br><br></td></tr>";
-				print "<tr><td><div style=\"text-align:center\"><a href=\"$prevlink\" class=\"$prevclass\">< Previous</a> | <a href=\"$nextlink\" class=\"$nextclass\">Next ></a></div></td></tr>";
-				
 				my $turn = 0;
 				while (my $ref = $sth->fetchrow_hashref()) {
 					my $id = $ref->{'id'};

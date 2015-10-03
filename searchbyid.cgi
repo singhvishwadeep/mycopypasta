@@ -135,7 +135,7 @@ if ($globalhit eq "") {
 						my $t1 = 0;
 						foreach my $val (@values) {
 							$val = trim($val);
-							$val =~ s{\'}{\\}g;
+							$val =~ s{\'}{\\'}g;
 							if ($t1 == 0) {
 								$t1 = 1;
 								$query .= "id like '%$val%'";
@@ -174,7 +174,7 @@ if ($globalhit eq "") {
 								print "<p class=\"two\">";
 							}
 							print '<img src="images/note.jpg" alt="Note View" style="width:20px;height:20px;">';
-							print "<a href=\"view.cgi\" class=\"heading_link\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"view.cgi\">";
+							print "<a href=\"viewid.cgi?id=$id\" class=\"heading_link\" target=\"_blank\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"editid.cgi?id=$id\" target=\"_blank\">";
 							print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a><br>';
 							print "<text class=\"date\">$date by <a href=\"profile.cgi?id=$userinfo{$showuser}\" class=\"heading_link\" target=\"_blank\">$showuser</a> (Shared: $shared)</text><br/>";
 							my $string = "categoryview.cgi?showmycategory=$category";
@@ -218,7 +218,7 @@ if ($globalhit eq "") {
 						my $t1 = 0;
 						foreach my $val (@values) {
 							$val = trim($val);
-							$val =~ s{\'}{\\}g;
+							$val =~ s{\'}{\\'}g;
 							if ($t1 == 0) {
 								$t1 = 1;
 								$query .= "id like '%$val%'";
@@ -257,7 +257,7 @@ if ($globalhit eq "") {
 							}
 							my $getusername = $ref->{'username'};
 							print '<img src="images/note.jpg" alt="Note View" style="width:20px;height:20px;">';
-							print "<a href=\"view.cgi\" class=\"heading_link\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"view.cgi\">";
+							print "<a href=\"viewid.cgi?id=$id\" class=\"heading_link\" target=\"_blank\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"editid.cgi?id=$id\" target=\"_blank\">";
 							print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a><br>';
 							print "<text class=\"date\">$date by <a href=\"profile.cgi?id=$userinfo{$getusername}\" class=\"heading_link\" target=\"_blank\">$getusername</a> (Shared: $shared)</text><br/>";
 							my $string = "categoryview.cgi?showmycategory=$category";

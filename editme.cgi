@@ -70,6 +70,17 @@ if ($login == 0) {
 	$secanswer = trim($secanswer);
 	$occupation = trim($occupation);
 	$place = trim($place);
+	
+	$username =~ s{\'}{\\'}g;
+	$name =~ s{\'}{\\'}g;
+	$id =~ s{\'}{\\'}g;
+	$email =~ s{\'}{\\'}g;
+	$dob =~ s{\'}{\\'}g;
+	$identitylock =~ s{\'}{\\'}g;
+	$secquestion =~ s{\'}{\\'}g;
+	$secanswer=~ s{\'}{\\'}g;
+	$occupation =~ s{\'}{\\'}g;
+	$place =~ s{\'}{\\'}g;
 		
 	if ($username ne "" && $id ne "" && $email ne "") {
 		my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";

@@ -64,6 +64,14 @@ if ($login == 1) {
 	$tags = trim($tags);
 	$share = trim($share);
 	
+	$topic =~ s{\'}{\\'}g;
+	$selectcategory =~ s{\'}{\\'}g;
+	$new_category=~ s{\'}{\\'}g;
+	$discussion =~ s{\'}{\\'}g;
+	$sources =~ s{\'}{\\'}g;
+	$tags =~ s{\'}{\\'}g;
+	$share =~ s{\'}{\\'}g;
+	
 	#print "user = -$getuser- <br/>";
 	#print "selectcategory = $selectcategory <br>";
 	#print "new_category = $new_category <br>";
@@ -157,7 +165,6 @@ if ($login == 1) {
 		} else {
 			$share = 1;
 		}
-		$discussion =~ s{\'}{\\}g;
 		$sth = $dbh->prepare("INSERT into datasubmission ( user,username,category,topic,discussion,source,tags,date,public,showme ) VALUES ( '$getuser','$getusername', '$category','$topic','$discussion','$sources','$tags',NOW(),'$share','1')");
 		$sth->execute();
 		$sth->finish();

@@ -70,6 +70,17 @@ if ($login == 1) {
 	$occupation = trim($occupation);
 	$place = trim($place);
 	
+	$username =~ s{\'}{\\'}g;
+	$name =~ s{\'}{\\'}g;
+	$password =~ s{\'}{\\'}g;
+	$email =~ s{\'}{\\'}g;
+	$dob =~ s{\'}{\\'}g;
+	$identitylock =~ s{\'}{\\'}g;
+	$secquestion =~ s{\'}{\\'}g;
+	$secanswer =~ s{\'}{\\'}g;
+	$occupation =~ s{\'}{\\'}g;
+	$place =~ s{\'}{\\'}g;
+	
 	my $usernameexists = 0;
 	my $emailexists = 0;
 		
@@ -164,6 +175,7 @@ if ($login == 1) {
 				my $ip = $ENV{REMOTE_ADDR};
 				my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 				my $dbh = DBI->connect($dsn,"root","");
+				print "INSERT into userdatabase ( myusername,mydob,name,mypassword,registeredip,registereddate,myemail,myidentitylock,mysecurityquestion,mysecurityanswer,myprofession,myplace ) VALUES ( '$username','$dob', '$name','$password', '$ip',NOW(),'$email','$identitylock','$secquestion','$secanswer','$occupation','$place')<br><br>";
 				$sth = $dbh->prepare("INSERT into userdatabase ( myusername,mydob,name,mypassword,registeredip,registereddate,myemail,myidentitylock,mysecurityquestion,mysecurityanswer,myprofession,myplace ) VALUES ( '$username','$dob', '$name','$password', '$ip',NOW(),'$email','$identitylock','$secquestion','$secanswer','$occupation','$place')");
 				$sth->execute();
 				$sth->finish();
