@@ -201,6 +201,10 @@ if ($login == 0) {
 						    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						    			<input type=\"text\" style=\"width:60%;background:$acntcol\" value=\"$acntstate\" readonly><br /><br />
 						    			
+						    			<text class=\"fontdec\">Update Password</text>
+						    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						    			<a href=\"updatepassword.cgi?id=$profileid\" class=\"button\">Click to update password</a><br /><br />
+						    			
 						    			</form>
 						    		</div>
 								</div>
@@ -209,7 +213,7 @@ if ($login == 0) {
 				$sth->finish();
 				$dbh->disconnect();
 			print '</body>
-		<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 My Blue Sky Labs, powered by Vishwadeep Singh</text></div>
+		<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs</a>, powered by Vishwadeep Singh</text></div>
 		<hr width="65%">
 		<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 	</html>';

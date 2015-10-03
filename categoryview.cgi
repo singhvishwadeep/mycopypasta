@@ -155,15 +155,23 @@ print '<html lang="en-US">
 							my $temp = $offset + $limit;
 							$nextlink = "categoryview.cgi?limit=$limit&offset=$temp";
 						}
-						
+						if ($current_results == 0) {
+							$start = 0;
+						}
 						print "<tr><td><a class=\"edit_button\">Displaying $current_results out of $total_results Results ($start - $end)</a><br><br></td></tr>";
-						print "<tr><td><div style=\"text-align:center\"><a href=\"$prevlink\" class=\"$prevclass\">< Previous</a> | <a href=\"$nextlink\" class=\"$nextclass\">Next ></a></div></td></tr>";
+						if ($current_results) {
+							print "<tr><td><div style=\"text-align:center\"><a href=\"$prevlink\" class=\"$prevclass\">< Previous</a> | <a href=\"$nextlink\" class=\"$nextclass\">Next ></a></div></td></tr>";
+						}
 						my $turn = 0;
 						while (my $ref = $sth->fetchrow_hashref()) {
 							my $id = $ref->{'id'};
 							my $category = $ref->{'category'};
 							my $topic = $ref->{'topic'};
 							my $showuser = $ref->{'username'};
+							my $editstate = "edit_button_disabled";
+							if ($showuser eq $getusername) {
+								$editstate = "edit_button";
+							}
 							my $discussion = $ref->{'discussion'};
 							my $source = $ref->{'source'};
 							my $date = $ref->{'date'};
@@ -182,8 +190,13 @@ print '<html lang="en-US">
 								print "<p class=\"two\">";
 							}
 							print '<img src="images/note.jpg" alt="Note View" style="width:20px;height:20px;">';
-							print "<a href=\"viewid.cgi?id=$id\" class=\"heading_link\" target=\"_blank\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"editid.cgi?id=$id\" target=\"_blank\">";
-							print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a><br>';
+							print "<a href=\"viewid.cgi?id=$id\" class=\"heading_link\" target=\"_blank\"><text class=\"headings\">$id. $topic</text></a>";
+							
+							if ($editstate eq "edit_button") {
+								print "<a class=\"$editstate\" href=\"editid.cgi?id=$id\" target=\"_blank\">";
+								print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a>';
+							}
+							print '<br>';
 							print "<text class=\"date\">$date by <a href=\"profile.cgi?id=$userinfo{$showuser}\" class=\"heading_link\" target=\"_blank\">$showuser</a> (Shared: $shared)</text><br/>";
 							my $string = "categoryview.cgi?showmycategory=$category";
 							encode_entities($string);
@@ -208,7 +221,9 @@ print '<html lang="en-US">
 								</td>
 							</tr>';
 						}
-						print "<tr><td><div style=\"text-align:center\"><a href=\"$prevlink\" class=\"$prevclass\">< Previous</a> | <a href=\"$nextlink\" class=\"$nextclass\">Next ></a></div></td></tr>";
+						if ($current_results) {
+							print "<tr><td><div style=\"text-align:center\"><a href=\"$prevlink\" class=\"$prevclass\">< Previous</a> | <a href=\"$nextlink\" class=\"$nextclass\">Next ></a></div></td></tr>";
+						}
 					} else {
 						my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 						my $dbh = DBI->connect($dsn,"root","");
@@ -250,9 +265,13 @@ print '<html lang="en-US">
 							my $temp = $offset + $limit;
 							$nextlink = "categoryview.cgi?limit=$limit&offset=$temp";
 						}
-						
+						if ($current_results == 0) {
+							$start = 0;
+						}
 						print "<tr><td><a class=\"edit_button\">Displaying $current_results out of $total_results Results ($start - $end)</a><br><br></td></tr>";
-						print "<tr><td><div style=\"text-align:center\"><a href=\"$prevlink\" class=\"$prevclass\">< Previous</a> | <a href=\"$nextlink\" class=\"$nextclass\">Next ></a></div></td></tr>";
+						if ($current_results) {
+							print "<tr><td><div style=\"text-align:center\"><a href=\"$prevlink\" class=\"$prevclass\">< Previous</a> | <a href=\"$nextlink\" class=\"$nextclass\">Next ></a></div></td></tr>";
+						}
 						my $turn = 0;
 						while (my $ref = $sth->fetchrow_hashref()) {
 							my $id = $ref->{'id'};
@@ -277,8 +296,8 @@ print '<html lang="en-US">
 							}
 							my $getusername = $ref->{'username'};
 							print '<img src="images/note.jpg" alt="Note View" style="width:20px;height:20px;">';
-							print "<a href=\"viewid.cgi?id=$id\" class=\"heading_link\" target=\"_blank\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"editid.cgi?id=$id\" target=\"_blank\">";
-							print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a><br>';
+							print "<a href=\"viewid.cgi?id=$id\" class=\"heading_link\" target=\"_blank\"><text class=\"headings\">$id. $topic</text></a>";
+							print '<br>';
 							print "<text class=\"date\">$date by <a href=\"profile.cgi?id=$userinfo{$getusername}\" class=\"heading_link\" target=\"_blank\">$getusername</a> (Shared: $shared)</text><br/>";
 							my $string = "categoryview.cgi?showmycategory=$category";
 							encode_entities($string);
@@ -303,13 +322,15 @@ print '<html lang="en-US">
 								</td>
 							</tr>';
 						}
-						print "<tr><td><div style=\"text-align:center\"><a href=\"$prevlink\" class=\"$prevclass\">< Previous</a> | <a href=\"$nextlink\" class=\"$nextclass\">Next ></a></div></td></tr>";
+						if ($current_results) {
+							print "<tr><td><div style=\"text-align:center\"><a href=\"$prevlink\" class=\"$prevclass\">< Previous</a> | <a href=\"$nextlink\" class=\"$nextclass\">Next ></a></div></td></tr>";
+						}
 					}
 			}
 			
 		print '</table>
 	</body>
-	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 My Blue Sky Labs, powered by Vishwadeep Singh</text></div>
+	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs</a>, powered by Vishwadeep Singh</text></div>
 	<hr width="65%">
 	<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 </html>';

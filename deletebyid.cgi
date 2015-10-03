@@ -125,101 +125,19 @@ if ($login == 0) {
 						      print '</ul>
 						    </div>
 						</td>
-					</tr>
-				</table>';
-					
-					my $query = "select id,myusername from userdatabase";
-					my $sth = $dbh->prepare($query);
-					$sth->execute();
-					my %userinfo;
-					while (my $ref = $sth->fetchrow_hashref()) {
-						$userinfo{$ref->{'myusername'}} = $ref->{'id'};
-					}
-					
-					$query = "SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where user='$getuser' AND showme=1 AND id='$editid'";
-					$sth = $dbh->prepare($query);
-					$sth->execute();
-					my $id = "";
-					my $category = "";
-					my $topic = "";
-					my $showuser = "";
-					my $discussion = "";
-					my $source = "";
-					my $tags = "";
-					my $date = "";
-					my $shared = "";
-					
-					
-					while (my $ref = $sth->fetchrow_hashref()) {
-						$id = $ref->{'id'};
-						$category = $ref->{'category'};
-						$topic = $ref->{'topic'};
-						$showuser = $ref->{'username'};
-						$discussion = $ref->{'discussion'};
-						$source = $ref->{'source'};
-						$tags = $ref->{'tags'};
-						$date = $ref->{'date'};
-						if ($ref->{'public'} == 0) {
-							$shared = "Private";
-						} else {
-							$shared = "Public";
-						}
-						break;
-					}
-					
-					print '<section class="adddata">
-				<div class="loginbox">Edit Copy-Pasta</div>
-				<form action="updateedit.cgi" method="post">
-				<text class="fontdec">ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </text><input required type="text" name="id" ';
-				print "value=\"$id\" style=\"width:30%;background:grey\" readonly/><br /><br />";
-				print '<text class="fontdec">Category&nbsp; </text><select id="selectcategory" name="selectcategory" onChange="changetextbox();"><option value="Create New Category">Create New Category</option>';
+					</tr>';
 				
-				$sth = $dbh->prepare("SELECT distinct(category) FROM categoryinfo");
+				$query = "update datasubmission set showme=0 where id = '$editid'";
+				$sth = $dbh->prepare($query);
 				$sth->execute();
-				while (my $ref = $sth->fetchrow_hashref()) {
-					if ($ref->{'category'} ne "") {
-						my $op = "";
-						if ($category eq $ref->{'category'}) {
-							$op = "selected";
-						}
-						print " <option $op value=\"$ref->{'category'}\">$ref->{'category'}</option>";
-					}
-				}
-				print "</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input required type=\"text\" title=\"new_category\" placeholder=\"New Category (max 128 characters)\" id=\"new_category\" name=\"new_category\" maxlength=\"128\" disabled/><br /><br />
-			    	<text class=\"fontdec\">Topic</text>
-			    	<input type=\"text\" required title=\"Topic\" placeholder=\"Topic (max 256 characters)\" style=\"width:100%\" name=\"topic\" value=\"$topic\" maxlength=\"256\"><br /><br />
-			    	<text class=\"fontdec\">Discussion</text>
-			    	<textarea placeholder=\"Write your Copy-Pasta! (max 1024 chars)\" class=\"discussion\" name=\"discussion\" maxlength=\"1024\" >$discussion</textarea><br /><br />
-			    	<text class=\"fontdec\">Sources</text>
-			    	<input type=\"text\" title=\"Sources\" placeholder=\"Sources (comma separated, max 512 characters)\" style=\"width:100%\" name=\"sources\" maxlength=\"512\" value=\"$source\"><br /><br />
-			    	<text class=\"fontdec\">Tags</text>
-			    	<input type=\"text\" title=\"Tags\" placeholder=\"Tags (comma separated, max 256 characters)\" style=\"width:100%\" name=\"tags\" maxlength=\"256\" value=\"$tags\"><br /><br />
-			    	<text class=\"fontdec\">Share&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text> <select name=\"share\">";
-				
-				if ($shared eq "Public") {
-					print "<option selected value=\"public\">public</option>";
-					print "<option value=\"private\">private</option>";
-				} else {
-					print "<option value=\"public\">public</option>";
-					print "<option selected value=\"private\">private</option>";
-				}
-				
-				print "</select><br /><br />
-			    	<input type=\"submit\" class=\"submitbox\" name=\"submit\" alt=\"search\" value=\"Update your Copy-Pasta\">
-			    	OR</text><br /> <a href=\"deletebyid.cgi?id=$id\" class=\"button_delete\" onclick=\"return confirm('Are you sure you want to delete your Copy-Pasta?');\">Delete Your Copy-Pasta</a><br /><br />
-			    	
-			    	</form> <br />
-			    	
-			    
-			</section>";
-					
-				print '</body>
+				print "<tr><td><font color=\"red\">Copy-Pasta ID: $editid is deleted. If needed back, please contact admin <a href=\"mailto:myblueskylabs@gmail.com ?Subject=Reg:Retreive%20Copy-Pasta\" target=\"_top\">(Send Mail to myblueskylabs@gmail.com)</a> for retrieving it back.</font></td></tr>";
+				print '</table></body>
 			<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs</a>, powered by Vishwadeep Singh</text></div>
 			<hr width="65%">
 			<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 		</html>';
 	} else {
-			print '<html lang="en-US">
+print '<html lang="en-US">
 			<head>
 				<title>My Copy-Pasta</title>
 				<link rel="shortcut icon" href="images/newlogo.ico">
@@ -278,7 +196,7 @@ if ($login == 0) {
 						</td>
 					</tr>';
 				
-				print "<tr><td><font color=\"red\">For Copy-Pasta ID: $editid, permission denied. If something wrong, please contact admin <a href=\"mailto:myblueskylabs@gmail.com ?Subject=Reg:Permission%20denied\" target=\"_top\">(Send Mail to myblueskylabs@gmail.com)</a> for the issue.</font></td></tr>";
+				print "<tr><td><font color=\"red\">For Copy-Pasta ID: $editid, permission denied. If something wrong, please contact admin <a href=\"mailto:myblueskylabs@gmail.com ?Subject=Reg:Permission%20issue\" target=\"_top\">(Send Mail to myblueskylabs@gmail.com)</a> for the issue.</font></td></tr>";
 				print '</table></body>
 			<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs</a>, powered by Vishwadeep Singh</text></div>
 			<hr width="65%">

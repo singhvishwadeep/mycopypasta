@@ -3,7 +3,7 @@ use CGI qw(:standard);
 use CGI::Carp qw/fatalsToBrowser warningsToBrowser/;
 use CGI::Cookie;
 use CGI::Session;
-use Digest::MD5 qw(md5 md5_hex md5_base64);
+use DBI;
 
 # new cgi query
 my $q = new CGI;
@@ -13,22 +13,8 @@ my $ssid = $q->cookie('MYCOPYPASTACOOKIE');
 print $q->header;
 # login error or not
 my $err = 0;
-my $msg = $q->param('error');
 # proper logged in?
 my $login = 0;
-
-if ($msg ne "") {
-	if (md5_hex('0') eq $msg) {
-		$msg = 0;
-		$err = 1;
-	} elsif (md5_hex('1') eq $msg) {
-		$msg = 1;
-		$err = 1;
-	} elsif (md5_hex('2') eq $msg) {
-		$msg = 2;
-		$err = 1;
-	}
-}
 
 if($ssid eq "") {
 	# empty/no cookie found. Hence not logged in
@@ -42,23 +28,68 @@ if($ssid eq "") {
 		if ($value eq "1") {
 			# properly logged in
 			$login = 1;
-			my $url="index.cgi";
-			my $t=0; # time until redirect activates
-			print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
-		} else {
-			#wrong password/ some error
-			$err = 1;
 		}
 	}
 }
+sub  trim { 
+	my $s = shift;
+	$s =~ s/^\s+|\s+$//g;
+	return $s;
+}
 
-if ($login == 0) {
+my $profileid = $q->param('profilename');
+
+if ($login == 0 || $profileid eq "") {
+	my $url="index.cgi";
+	my $t=0; # time until redirect activates
+	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+} elsif ($login == 1 && $session->param('logged_in_user_mycp') ne $profileid) {
+	my $url="index.cgi";
+	my $t=0; # time until redirect activates
+	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+} else {
+
+
+	my $oldpassword=param('oldpassword');
+	my $password=param('password');
+	
+	$oldpassword = trim($oldpassword);
+	$password = trim($password);
+	
+	$oldpassword =~ s{\'}{\\'}g;
+	$password =~ s{\'}{\\'}g;
+	
+	my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+	my $dbh = DBI->connect($dsn,"root","");
+	$profileid = $session->param('logged_in_userid_mycp');
+	my $sth = $dbh->prepare("SELECT id,mypassword FROM userdatabase where id='$profileid'");
+	$sth->execute();
+	my $dbpass = 0;
+	while (my $ref = $sth->fetchrow_hashref()) {
+		if ($ref->{'mypassword'} eq $oldpassword) {
+			$dbpass = 1;
+		}
+		break;
+	}
+	
+	my $msg = "";
+	
+	if ($dbpass == 0) {
+		$msg = "<font color=red>Wrong Old Password provided. Please check your password.</font> In case of any issues, please contact admin <a href=\"mailto:myblueskylabs@gmail.com ?Subject=Reg:Retreive%20Copy-Pasta\" target=\"_top\">(Send Mail to myblueskylabs@gmail.com).</a>";
+	} else {
+		$sth = $dbh->prepare("update userdatabase set mypassword='$password' where id='$profileid'");
+		$sth->execute();
+		$msg = "<font color=green>Password updated. Kindly <a href=\"logout.cgi\">logout</a> and login again for updated password.</font> In case of any issues, please contact admin <a href=\"mailto:myblueskylabs@gmail.com ?Subject=Reg:Retreive%20Copy-Pasta\" target=\"_top\">(Send Mail to myblueskylabs@gmail.com).</a>";
+	}
+	
 	print '<html lang="en-US">
 		<head>
 			<title>My Copy-Pasta</title>
 			<link rel="shortcut icon" href="images/newlogo.ico">
 			<link rel="stylesheet" type="text/css" href="css/style.css">
 			<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
+			<link rel="stylesheet" type="text/css" href="css/paragraph.css">
+			<link rel="stylesheet" type="text/css" href="css/registerpasta.css">
 			<div id="fb-root"></div>
 			<script>(function(d, s, id) {
 				  var js, fjs = d.getElementsByTagName(s)[0];
@@ -67,6 +98,23 @@ if ($login == 0) {
 				  js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.4&appId=173510282674533";
 				  fjs.parentNode.insertBefore(js, fjs);
 				}(document, \'script\', \'facebook-jssdk\'));
+			</script>
+			<script>
+				function myFunction() {
+		    		var pass1 = document.getElementById("password").value;
+				    var pass2 = document.getElementById("repassword").value;
+				    var ok = true;
+				    if (pass1 != pass2) {
+				        //alert("Passwords Do not match");
+				        document.getElementById("passwordmsg").innerHTML = \'Mismatch Password\';
+				        document.getElementById("passwordmsg").style.backgroundColor  = "#E34234";
+				        ok = false;
+				    } else {
+				    	//alert("Passwords match");
+				        document.getElementById("passwordmsg").innerHTML = \'\';
+				    }
+				    return ok;
+				}
 			</script>
 		</head>
 		
@@ -99,38 +147,13 @@ if ($login == 0) {
 					      print '</ul>
 					    </div>
 					</td>
-				</tr>
-			</table>
-			<section class="login">
-				<div class="loginbox">My Copy-Pasta Login</div>
-				<form action="validate.cgi" method="post" autocomplete="off">
-			    	<input type="text" required title="Username required" placeholder="Username" name="User" autocomplete="off">
-			        <input type="password" required title="Password required" placeholder="Password" name="Password"><br /><br />
-			        <input type="submit" class="submitbox" name="submit" alt="search" value="Submit">';
-	if ($err) {
-			#msg = 0; account deleted
-			#msg = 1; account is not activated
-			#msg = 2; wrong username/password
-			if ($msg == 0) {
-				print "<div class=\"colorerr\">Account is deleted</div>";
-			} elsif ($msg == 1) {
-				print "<div class=\"colorerr\">Account is not activated</div>";
-			} else {
-				print "<div class=\"colorerr\">Wrong username/password</div>";
-			}
-	}
-			        
-					print '<div class="otherbox">
-							<div class="colorme"><a href="register.cgi">Register</a></div>
-			            <div class="colorme"><a href="forgotpwd.cgi">Forgot Password?</a></div>
-			        </div>
-			    </form>
-			</section>
-		</body>
+				</tr>';
+				print "<tr><td>$msg</td></tr>";
+			print '</table></body>
 		<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs</a>, powered by Vishwadeep Singh</text></div>
 		<hr width="65%">
 		<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 	</html>';
-
 }
+
 1;

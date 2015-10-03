@@ -58,6 +58,32 @@ text.date {
 	 padding-right:8px;
 }
 
+.edit_button_disabled{
+	 border: #ffc826;
+	 -webkit-border-radius: 3px;
+	 -moz-border-radius: 3px;
+	 border-radius: 3px;
+	 font-size:10px;
+	 font-family:arial, helvetica, sans-serif; 
+	 padding: 4px 4px 4px 4px; 
+	 text-decoration:none; 
+	 display:inline-block;
+	 font-weight:bold; 
+	 color: #000000;
+	 background-color: grey;
+	 padding-right:8px;
+	 pointer-events: none;
+	cursor: default;
+}
+
+.edit_button_disabled:hover{
+	 border: #f7b800;
+	 background-color: grey;
+	 padding-right:8px;
+	 pointer-events: none;
+	cursor: default;
+}
+
 
 .source_button{
 	 border: #b2b200;
@@ -194,3 +220,24 @@ a.button_disabled:hover{
 	pointer-events: none;
 	cursor: default;
 }
+
+a.button_delete {
+	-webkit-appearance: button;
+	-moz-appearance: button;
+	appearance: button;
+	padding:2px;
+    color: white;
+    background:red;
+    box-shadow: 0px 0px 50px rgba(0,0,0,.8);
+    border-radius: 6px;
+}
+
+a.button_delete:hover{
+	 border: #f7b800;
+	 background-color: #ffc92b;
+	 color: black;
+	 padding:2px;
+	 box-shadow: 0px 0px 50px rgba(0,0,0,.8);
+	 border-radius: 6px;
+}
+

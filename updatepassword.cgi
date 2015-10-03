@@ -32,12 +32,17 @@ if($ssid eq "") {
 	}
 }
 
-if ($login == 0) {
-	my $url="login.cgi";
+my $profileid = $q->param('id');
+
+if ($login == 0 || $profileid eq "") {
+	my $url="index.cgi";
+	my $t=0; # time until redirect activates
+	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+} elsif ($login == 1 && $session->param('logged_in_userid_mycp') ne $profileid) {
+	my $url="index.cgi";
 	my $t=0; # time until redirect activates
 	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 } else {
-
 
 	print '<html lang="en-US">
 		<head>
@@ -45,7 +50,8 @@ if ($login == 0) {
 			<link rel="shortcut icon" href="images/newlogo.ico">
 			<link rel="stylesheet" type="text/css" href="css/style.css">
 			<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
-			<link rel="stylesheet" type="text/css" href="css/addpasta.css">
+			<link rel="stylesheet" type="text/css" href="css/paragraph.css">
+			<link rel="stylesheet" type="text/css" href="css/registerpasta.css">
 			<div id="fb-root"></div>
 			<script>(function(d, s, id) {
 				  var js, fjs = d.getElementsByTagName(s)[0];
@@ -55,16 +61,22 @@ if ($login == 0) {
 				  fjs.parentNode.insertBefore(js, fjs);
 				}(document, \'script\', \'facebook-jssdk\'));
 			</script>
-			<script type="text/javascript">
-			function changetextbox()
-			{
-			    document.getElementById("new_category").disabled=\'\';
-				if (document.getElementById("selectcategory").value != "Create New Category") {
-				    document.getElementById("new_category").disabled=\'true\';
-				} else {
-				    document.getElementById("new_category").disabled=\'\';
+			<script>
+				function myFunction() {
+		    		var pass1 = document.getElementById("password").value;
+				    var pass2 = document.getElementById("repassword").value;
+				    var ok = true;
+				    if (pass1 != pass2) {
+				        //alert("Passwords Do not match");
+				        document.getElementById("passwordmsg").innerHTML = \'Mismatch Password\';
+				        document.getElementById("passwordmsg").style.backgroundColor  = "#E34234";
+				        ok = false;
+				    } else {
+				    	//alert("Passwords match");
+				        document.getElementById("passwordmsg").innerHTML = \'\';
+				    }
+				    return ok;
 				}
-			}
 			</script>
 		</head>
 		
@@ -97,40 +109,30 @@ if ($login == 0) {
 					      print '</ul>
 					    </div>
 					</td>
-				</tr>
-			</table>';
-			
-			print '<section class="adddata">
-				<div class="loginbox">Add Copy-Pasta</div>
-				<form action="adddone.cgi" method="post">
-				<text class="fontdec">Category&nbsp; </text><select id="selectcategory" name="selectcategory" onChange="changetextbox();"><option selected value="Create New Category">Create New Category</option>';
-				
-			my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
-			my $dbh = DBI->connect($dsn,"root","");
-			my $sth = $dbh->prepare("SELECT distinct(category) FROM categoryinfo");
-			$sth->execute();
-			while (my $ref = $sth->fetchrow_hashref()) {
-				if ($ref->{'category'} ne "") {
-					print " <option value=\"$ref->{'category'}\">$ref->{'category'}</option>";
-				}
-			}
-			print '</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input required type="text" title="New_Category" placeholder="New Category (max 128 characters)" id="new_category" name="new_category" maxlength="128"/><br /><br />
-			    	<text class="fontdec">Topic</text>
-			    	<input type="text" required title="Topic" placeholder="Topic (max 256 characters)" style="width:100%" name="topic" maxlength="256"><br /><br />
-			    	<text class="fontdec">Discussion</text>
-			    	<textarea placeholder="Write your Copy-Pasta! (max 1024 chars)" class="discussion" name="discussion" maxlength="1024"></textarea><br /><br />
-			    	<text class="fontdec">Sources</text>
-			    	<input type="text" title="Sources" placeholder="Sources (comma separated, max 512 characters)" style="width:100%" name="sources" maxlength="512"><br /><br />
-			    	<text class="fontdec">Tags</text>
-			    	<input type="text" title="Tags" placeholder="Tags (comma separated, max 256 characters)" style="width:100%" name="tags" maxlength="256"><br /><br />
-			    	<text class="fontdec">Share&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text> <select name="share">
-			    	<option value="public">public</option>
-			    	<option selected value="private">private</option>
-			    	</select><br /><br />
-			    	<input type="submit" class="submitbox" name="submit" alt="search" value="Submit your Copy-Pasta">
-			    </form>
-			</section>
-		</body>
+				</tr></table>';
+				$nameme = $session->param('logged_in_user_mycp');
+				print "<section class=\"registerdata\">
+					<div class=\"loginbox\">Update your Copy-Pasta Profile Password</div>
+					<form action=\"setnewpassword.cgi\" onsubmit=\"return myFunction()\" METHOD=\"post\" ENCTYPE=\"multipart/form-data\">
+					<text class=\"fontdec\">Username</text>
+		    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		    			<input type=\"text\" style=\"width:60%;background:grey\" name=\"profilename\" value=\"$nameme\" readonly><br /><br />
+					
+					
+						<text class=\"fontdec\">Old Password</text>
+				    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    		<input type=\"password\" placeholder=\"minimum 6 characters\" style=\"width:70%;\" id=\"oldpassword\" name=\"oldpassword\" maxlength=\"64\" pattern=\".{6,}\" required><br /><br />
+				    	<text class=\"fontdec\">New Password</text>
+				    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    		<input type=\"password\" style=\"width:70%;\" placeholder=\"minimum 6 characters\" id=\"password\" name=\"password\" maxlength=\"64\" pattern=\".{6,}\" required><br /><br />
+				    	<text class=\"fontdec\">Retype New Password</text>
+				    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    		<input type=\"password\" style=\"width:70%;\" placeholder=\"minimum 6 characters\" id=\"repassword\" name=\"repassword\" maxlength=\"64\" pattern=\".{6,}\" required><br /><br />
+				    		<label id=\"passwordmsg\"></label>
+				    	<input type=\"submit\" class=\"submitbox\" name=\"submit\" alt=\"search\" value=\"Submit Changes\">
+				    </form>
+				</section>";
+			print '</body>
 		<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs</a>, powered by Vishwadeep Singh</text></div>
 		<hr width="65%">
 		<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
