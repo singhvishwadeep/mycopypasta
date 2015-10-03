@@ -132,7 +132,7 @@ if ($login == 0) {
 				$sth->execute();
 				print "<tr><td><font color=\"red\">Copy-Pasta ID: $editid is deleted. If needed back, please contact admin <a href=\"mailto:myblueskylabs@gmail.com ?Subject=Reg:Retreive%20Copy-Pasta\" target=\"_top\">(Send Mail to myblueskylabs@gmail.com)</a> for retrieving it back.</font></td></tr>";
 				print '</table></body>
-			<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs</a>, powered by Vishwadeep Singh</text></div>
+			<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">&copy;2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs (myblueskylabs@gmail.com)</a>, powered by Vishwadeep Singh</text></div>
 			<hr width="65%">
 			<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 		</html>';
@@ -198,7 +198,7 @@ print '<html lang="en-US">
 				
 				print "<tr><td><font color=\"red\">For Copy-Pasta ID: $editid, permission denied. If something wrong, please contact admin <a href=\"mailto:myblueskylabs@gmail.com ?Subject=Reg:Permission%20issue\" target=\"_top\">(Send Mail to myblueskylabs@gmail.com)</a> for the issue.</font></td></tr>";
 				print '</table></body>
-			<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs</a>, powered by Vishwadeep Singh</text></div>
+			<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">&copy;2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs (myblueskylabs@gmail.com)</a>, powered by Vishwadeep Singh</text></div>
 			<hr width="65%">
 			<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 		</html>';

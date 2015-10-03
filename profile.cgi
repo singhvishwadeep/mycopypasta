@@ -158,62 +158,67 @@ if ($login == 0) {
 					
 					
 					print "</table><section class=\"registerdata\">
-							<div class=\"loginbox\">Copy-Pasta Profile of <font color=black>$name</font> $message</div>
-							<div class='container2'>
-								<div>
-									<img width=\"120px\" alt=\"$myusername\" border=\"2\" class='iconDetails' src=\"get_blob.cgi?id=$profileid\">
-					    		</div>	
-								<div style='margin-left:60px;'>
-				    				<form>
-										<text class=\"fontdec\">Username</text>
-						    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						    			<input type=\"text\" style=\"width:60%\" value=\"$myusername\" readonly><br /><br />
-						    			
-						    			<text class=\"fontdec\">Name</text>
-						    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						    			<input type=\"text\" style=\"width:60%\" value=\"$name\" readonly><br /><br />
-						    			
-						    			<text class=\"fontdec\">Email</text>
-						    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						    			<input type=\"text\" style=\"width:60%\" value=\"$myemail\" readonly><br /><br />
-						    			
-						    			<text class=\"fontdec\">Date of Birth</text>
-						    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						    			<input type=\"text\" style=\"width:60%\" value=\"$mydob\" readonly><br /><br />
-						    			
-						    			<text class=\"fontdec\">Occupation</text>
-						    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						    			<input type=\"text\" style=\"width:60%\" value=\"$myprofession\" readonly><br /><br />
-						    			
-						    			<text class=\"fontdec\">Place</text>
-						    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						    			<input type=\"text\" style=\"width:60%\" value=\"$myplace\" readonly><br /><br />
-						    			
-						    			<text class=\"fontdec\">Account Reg. Date</text>
-						    				&nbsp;&nbsp;
-						    			<input type=\"text\" style=\"width:60%\" value=\"$registereddate\" readonly><br /><br />
-						    			
-						    			<text class=\"fontdec\">Account Type</text>
-						    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						    			<input type=\"text\" style=\"width:60%\" value=\"$account\" readonly><br /><br />
-						    			
-						    			<text class=\"fontdec\">Account State</text>
-						    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						    			<input type=\"text\" style=\"width:60%;background:$acntcol\" value=\"$acntstate\" readonly><br /><br />
-						    			
-						    			<text class=\"fontdec\">Update Password</text>
-						    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						    			<a href=\"updatepassword.cgi?id=$profileid\" class=\"button\">Click to update password</a><br /><br />
-						    			
-						    			</form>
-						    		</div>
-								</div>
-				    			</section>";
+					<div class=\"loginbox\">Copy-Pasta Profile of <font color=black>$name</font> $message</div>
+					<div class='container2'>
+						<div>
+							<img width=\"120px\" alt=\"$myusername\" border=\"2\" class='iconDetails' src=\"get_blob.cgi?id=$profileid\">
+			    		</div>	
+						<div style='margin-left:60px;'>
+		    				<form>
+								<text class=\"fontdec\">Username</text>
+				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    			<input type=\"text\" style=\"width:60%\" value=\"$myusername\" readonly><br /><br />
+				    			
+				    			<text class=\"fontdec\">Name</text>
+				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    			<input type=\"text\" style=\"width:60%\" value=\"$name\" readonly><br /><br />
+				    			
+				    			<text class=\"fontdec\">Email</text>
+				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    			<input type=\"text\" style=\"width:60%\" value=\"$myemail\" readonly><br /><br />
+				    			
+				    			<text class=\"fontdec\">Date of Birth</text>
+				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    			<input type=\"text\" style=\"width:60%\" value=\"$mydob\" readonly><br /><br />
+				    			
+				    			<text class=\"fontdec\">Occupation</text>
+				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    			<input type=\"text\" style=\"width:60%\" value=\"$myprofession\" readonly><br /><br />
+				    			
+				    			<text class=\"fontdec\">Place</text>
+				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    			<input type=\"text\" style=\"width:60%\" value=\"$myplace\" readonly><br /><br />
+				    			
+				    			<text class=\"fontdec\">Account Reg. Date</text>
+				    				&nbsp;&nbsp;
+				    			<input type=\"text\" style=\"width:60%\" value=\"$registereddate\" readonly><br /><br />
+				    			
+				    			<text class=\"fontdec\">Account Type</text>
+				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    			<input type=\"text\" style=\"width:60%\" value=\"$account\" readonly><br /><br />
+				    			
+				    			<text class=\"fontdec\">Account State</text>
+				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    			<input type=\"text\" style=\"width:60%;background:$acntcol\" value=\"$acntstate\" readonly><br /><br />
+				    			
+				    			<text class=\"fontdec\">Update Password</text>
+				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    			<a href=\"updatepassword.cgi?id=$profileid\" class=\"button\">Click to update password</a><br /><br />";
+				    			
+				    			if ($account eq "admin account") {
+					    			print "<text class=\"fontdec\">Update Password</text>
+					    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					    			<a href=\"activateaccount.cgi\" class=\"button\">Click for Pending Account Activations</a><br /><br />";
+				    			}
+				    			print "</form>
+				    		</div>
+						</div>
+		    			</section>";
 				}
 				$sth->finish();
 				$dbh->disconnect();
 			print '</body>
-		<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs</a>, powered by Vishwadeep Singh</text></div>
+		<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">&copy;2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs (myblueskylabs@gmail.com)</a>, powered by Vishwadeep Singh</text></div>
 		<hr width="65%">
 		<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 	</html>';

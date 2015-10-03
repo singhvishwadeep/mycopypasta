@@ -33,19 +33,22 @@ if($ssid eq "") {
 }
 
 if ($login == 0) {
-	my $url="login.cgi";
+	my $url="index.cgi";
+	my $t=0; # time until redirect activates
+	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+} elsif ($login == 1 && $session->param('logged_in_user_mycp') ne "admin") {
+	my $url="index.cgi";
 	my $t=0; # time until redirect activates
 	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 } else {
-
-
 	print '<html lang="en-US">
 		<head>
 			<title>My Copy-Pasta</title>
 			<link rel="shortcut icon" href="images/newlogo.ico">
 			<link rel="stylesheet" type="text/css" href="css/style.css">
 			<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
-			<link rel="stylesheet" type="text/css" href="css/addpasta.css">
+			<link rel="stylesheet" type="text/css" href="css/paragraph.css">
+			<link rel="stylesheet" type="text/css" href="css/registerpasta.css">
 			<div id="fb-root"></div>
 			<script>(function(d, s, id) {
 				  var js, fjs = d.getElementsByTagName(s)[0];
@@ -55,16 +58,41 @@ if ($login == 0) {
 				  fjs.parentNode.insertBefore(js, fjs);
 				}(document, \'script\', \'facebook-jssdk\'));
 			</script>
-			<script type="text/javascript">
-			function changetextbox()
-			{
-			    document.getElementById("new_category").disabled=\'\';
-				if (document.getElementById("selectcategory").value != "Create New Category") {
-				    document.getElementById("new_category").disabled=\'true\';
-				} else {
-				    document.getElementById("new_category").disabled=\'\';
+			<script>
+				function myFunction() {
+		    		var pass1 = document.getElementById("password").value;
+				    var pass2 = document.getElementById("repassword").value;
+				    var ok = true;
+				    if (pass1 != pass2) {
+				        //alert("Passwords Do not match");
+				        document.getElementById("passwordmsg").innerHTML = \'Mismatch Password\';
+				        document.getElementById("passwordmsg").style.backgroundColor  = "#E34234";
+				        ok = false;
+				    } else {
+				    	//alert("Passwords match");
+				        document.getElementById("passwordmsg").innerHTML = \'\';
+				    }
+				    return ok;
 				}
-			}
+			</script>
+			<script type="text/javascript">
+				var checkflag = "false";
+				function check(field) {
+				  if (checkflag == "false") {
+				    for (i = 0; i < field.length; i++) {
+				      field[i].checked = true;
+				    }
+				    checkflag = "true";
+				    return "Uncheck All";
+				  } else {
+				    for (i = 0; i < field.length; i++) {
+				      field[i].checked = false;
+				    }
+				    checkflag = "false";
+				    return "Check All";
+				  }
+				}
+				
 			</script>
 		</head>
 		
@@ -97,40 +125,23 @@ if ($login == 0) {
 					      print '</ul>
 					    </div>
 					</td>
-				</tr>
-			</table>';
-			
-			print '<section class="adddata">
-				<div class="loginbox">Add Copy-Pasta</div>
-				<form action="adddone.cgi" method="post">
-				<text class="fontdec">Category&nbsp; </text><select id="selectcategory" name="selectcategory" onChange="changetextbox();"><option selected value="Create New Category">Create New Category</option>';
+				</tr>';
 				
-			my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
-			my $dbh = DBI->connect($dsn,"root","");
-			my $sth = $dbh->prepare("SELECT distinct(category) FROM categoryinfo");
-			$sth->execute();
-			while (my $ref = $sth->fetchrow_hashref()) {
-				if ($ref->{'category'} ne "") {
-					print " <option value=\"$ref->{'category'}\">$ref->{'category'}</option>";
+				my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+				my $dbh = DBI->connect($dsn,"root","");
+				
+				my $query = "select id,myusername,name from userdatabase where activeaccount=0 AND deleted=0";
+				my $sth = $dbh->prepare($query);
+				$sth->execute();
+				print "<tr><td><form name=myform action=\"performactivation.cgi\" method=post><input type=button value=\"Check All\" onClick=\"this.value=check(this.form.list)\"><br />";
+				while (my $ref = $sth->fetchrow_hashref()) {
+					my $userid = $ref->{'id'};
+					my $username = $ref->{'myusername'};
+					my $name = $ref->{'name'};
+					print "<input type=checkbox name=list value=\"$userid\"><a href=\"profile.cgi?id=$userid\" target=\"_blank\">$name</a><br />";
 				}
-			}
-			print '</select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input required type="text" title="New_Category" placeholder="New Category (max 128 characters)" id="new_category" name="new_category" maxlength="128"/><br /><br />
-			    	<text class="fontdec">Topic</text>
-			    	<input type="text" required title="Topic" placeholder="Topic (max 256 characters)" style="width:100%" name="topic" maxlength="256"><br /><br />
-			    	<text class="fontdec">Discussion</text>
-			    	<textarea placeholder="Write your Copy-Pasta! (max 1024 chars)" class="discussion" name="discussion" maxlength="1024"></textarea><br /><br />
-			    	<text class="fontdec">Sources</text>
-			    	<input type="text" title="Sources" placeholder="Sources (comma separated, max 512 characters)" style="width:100%" name="sources" maxlength="512"><br /><br />
-			    	<text class="fontdec">Tags</text>
-			    	<input type="text" title="Tags" placeholder="Tags (comma separated, max 256 characters)" style="width:100%" name="tags" maxlength="256"><br /><br />
-			    	<text class="fontdec">Share&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</text> <select name="share">
-			    	<option value="public">public</option>
-			    	<option selected value="private">private</option>
-			    	</select><br /><br />
-			    	<input type="submit" class="submitbox" name="submit" alt="search" value="Submit your Copy-Pasta">
-			    </form>
-			</section>
-		</body>
+				
+			print '<input type="submit" name="submit" alt="search" value="Activate Accounts"></form></td></tr></table></body>
 		<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">&copy;2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs (myblueskylabs@gmail.com)</a>, powered by Vishwadeep Singh</text></div>
 		<hr width="65%">
 		<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
