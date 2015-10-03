@@ -3,6 +3,8 @@ use CGI qw(:standard);
 use CGI::Carp qw/fatalsToBrowser warningsToBrowser/;
 use CGI::Cookie;
 use CGI::Session;
+use DBI;
+use HTML::Entities;
 
 # new cgi query
 my $q = new CGI;
@@ -30,6 +32,44 @@ if($ssid eq "") {
 		}
 	}
 }
+
+sub  trim { 
+	my $s = shift;
+	$s =~ s/^\s+|\s+$//g;
+	return $s;
+}
+
+#if ($login == 0) {
+#	my $url="login.cgi";
+#	my $t=0; # time until redirect activates
+#	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+#} 
+
+my $selectcategorykey = $q->param('selectcategory');
+my $textcategorykey = $q->param('searchcategory');
+my $topickey = $q->param('searchtopic');
+my $discussionkey = $q->param('searchdiscussion');
+my $sourcekey = $q->param('searchsources');
+my $selecttagkey = $q->param('selecttags');
+my $texttagkey = $q->param('searchtags');
+my $globalhit = $q->param('global');
+
+$selectcategorykey = trim($selectcategorykey);
+$textcategorykey = trim($textcategorykey);
+$topickey = trim($topickey);
+$discussionkey = trim($discussionkey);
+$sourcekey = trim($sourcekey);
+$selecttagkey = trim($selecttagkey);
+$texttagkey = trim($texttagkey);
+
+if ($globalhit eq "") {
+	$globalhit = 0;
+} else {
+	$globalhit = 1;
+}
+
+
+
 print '<html lang="en-US">
 	<head>
 		<title>My Copy-Pasta</title>
@@ -79,6 +119,341 @@ print '<html lang="en-US">
 				</td>
 			</tr>
 		</table>
+		<table class="box" align="center" width="65%">';
+		if ($selectcategorykey ne "Keyword for Category" || $textcategorykey ne "" || $topickey ne "" || $discussionkey ne "" || $sourcekey ne "" || $selecttagkey ne "Keyword for Tags" || $texttagkey ne "" ) {
+				
+				if ($login == 1) {
+						my $getuser = $session->param('logged_in_userid_mycp');
+						my $getusername = $session->param('logged_in_user_mycp');
+						my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+						my $dbh = DBI->connect($dsn,"root","");
+						my $query = "select id,myusername from userdatabase";
+						my $sth = $dbh->prepare($query);
+						$sth->execute();
+						my %userinfo;
+						while (my $ref = $sth->fetchrow_hashref()) {
+							$userinfo{$ref->{'myusername'}} = $ref->{'id'};
+						}
+						
+						$query = "SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where";
+						
+						if ($globalhit == 1) {
+							$query .= " (user='$getuser' OR public=1)";
+						} else {
+							$query .= " (user='$getuser')";
+						}
+						
+						if ($selectcategorykey ne "Keyword for Category") {
+							$query .= "AND (category='$selectcategorykey')";
+						} elsif ($textcategorykey ne "") {
+							my @values = split(',', $textcategorykey);
+							my $t1 = 0;
+							$query .= " AND (";
+							foreach my $val (@values) {
+								$val = trim($val);
+								$val =~ s{\'}{\\}g;
+								if ($t1 == 0) {
+									$t1 = 1;
+									$query .= "category like '%$val%'";
+								} else {
+									$query .= " OR category like '%$val%'";
+								}
+							}
+							$query .= ")";
+						}
+						
+						if ($selecttagkey ne "Keyword for Tags") {
+							$query .= "AND (tags='$selecttagkey')";
+						} elsif ($texttagkey ne "") {
+							my @values = split(',', $texttagkey);
+							my $t1 = 0;
+							$query .= " AND (";
+							foreach my $val (@values) {
+								$val = trim($val);
+								$val =~ s{\'}{\\}g;
+								if ($t1 == 0) {
+									$t1 = 1;
+									$query .= "tags like '%$val%'";
+								} else {
+									$query .= " OR tags like '%$val%'";
+								}
+							}
+							$query .= ")";
+						}
+						
+						if ($topickey ne "") {
+							my @values = split(',', $topickey);
+							my $t1 = 0;
+							$query .= " AND (";
+							foreach my $val (@values) {
+								$val = trim($val);
+								$val =~ s{\'}{\\}g;
+								if ($t1 == 0) {
+									$t1 = 1;
+									$query .= "topic like '%$val%'";
+								} else {
+									$query .= " OR topic like '%$val%'";
+								}
+							}
+							$query .= ")";
+						}
+						
+						if ($discussionkey ne "") {
+							my @values = split(',', $discussionkey);
+							my $t1 = 0;
+							$query .= " AND (";
+							foreach my $val (@values) {
+								$val = trim($val);
+								$val =~ s{\'}{\\}g;
+								if ($t1 == 0) {
+									$t1 = 1;
+									$query .= "discussion like '%$val%'";
+								} else {
+									$query .= " OR discussion like '%$val%'";
+								}
+							}
+							$query .= ")";
+						}
+						
+						if ($sourcekey ne "") {
+							my @values = split(',', $sourcekey);
+							my $t1 = 0;
+							$query .= " AND (";
+							foreach my $val (@values) {
+								$val = trim($val);
+								$val =~ s{\'}{\\}g;
+								if ($t1 == 0) {
+									$t1 = 1;
+									$query .= "source like '%$val%'";
+								} else {
+									$query .= " OR source like '%$val%'";
+								}
+							}
+							$query .= ")";
+						}
+						
+						$query .= " AND showme=1 ORDER BY id DESC";
+						$sth = $dbh->prepare($query);
+						$sth->execute();
+						my $countres = $sth->rows;
+						print "<tr><td><a class=\"edit_button\">Found $countres Results</a><br><br></td></tr>";
+						my $turn = 0;
+						while (my $ref = $sth->fetchrow_hashref()) {
+							
+							my $id = $ref->{'id'};
+							my $category = $ref->{'category'};
+							my $topic = $ref->{'topic'};
+							my $showuser = $ref->{'username'};
+							my $discussion = $ref->{'discussion'};
+							my $source = $ref->{'source'};
+							my $date = $ref->{'date'};
+							my $tags = $ref->{'tags'};
+							if ($ref->{'public'} == 0) {
+								$shared = "Private";
+							} else {
+								$shared = "Public";
+							}
+							print "<tr><td>";
+							if ($turn == 0) {
+								$turn = 1;
+								print "<p class=\"one\">";
+							} else {
+								$turn = 0;
+								print "<p class=\"two\">";
+							}
+							print '<img src="images/note.jpg" alt="Note View" style="width:20px;height:20px;">';
+							print "<a href=\"view.cgi\" class=\"heading_link\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"view.cgi\">";
+							print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a><br>';
+							print "<text class=\"date\">$date by <a href=\"profile.cgi?id=$userinfo{$showuser}\" class=\"heading_link\" target=\"_blank\">$showuser</a> (Shared: $shared)</text><br/>";
+							my $string = "categoryview.cgi?showmycategory=$category";
+							encode_entities($string);
+							print "<a class=\"category_button\" href=\"$string\" target=\"_blank\">Category: $category</a><br><br>";
+							print "<textarea readonly class=\"discussion\">$discussion</textarea><br>";
+							print '<text class="information">Sources:</text>';
+							my @values = split(',', $source);
+							foreach my $val (@values) {
+								$val = trim($val);
+								print "<a class=\"source_button\" href=\"$val\">$val</a>&nbsp;";
+							}
+							print '<br><text class="information">Tags:</text>';
+							my @values = split(',', $tags);
+							foreach my $val (@values) {
+								$val = trim($val);
+								my $string = "tagview.cgi?showmytag=$val";
+   								encode_entities($string);
+								print "<a class=\"tag_button\" href=\"$string\" target=\"_blank\">$val</a>&nbsp;";
+							}
+							print '<br>
+									</p>
+								</td>
+							</tr>';
+						}
+					} elsif ($globalhit == 1) {
+						my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+						my $dbh = DBI->connect($dsn,"root","");
+						my $query = "select id,myusername from userdatabase";
+						my $sth = $dbh->prepare($query);
+						$sth->execute();
+						my %userinfo;
+						while (my $ref = $sth->fetchrow_hashref()) {
+							$userinfo{$ref->{'myusername'}} = $ref->{'id'};
+						}
+						
+						$query = "SELECT id,username,category,topic,discussion,source,tags,date,public FROM datasubmission where (public=1)";
+						
+						if ($selectcategorykey ne "Keyword for Category") {
+							$query .= "AND (category='$selectcategorykey')";
+						} elsif ($textcategorykey ne "") {
+							my @values = split(',', $textcategorykey);
+							my $t1 = 0;
+							$query .= " AND (";
+							foreach my $val (@values) {
+								$val = trim($val);
+								$val =~ s{\'}{\\}g;
+								if ($t1 == 0) {
+									$t1 = 1;
+									$query .= "category like '%$val%'";
+								} else {
+									$query .= " OR category like '%$val%'";
+								}
+							}
+							$query .= ")";
+						}
+						
+						if ($selecttagkey ne "Keyword for Tags") {
+							$query .= "AND (tags='$selecttagkey')";
+						} elsif ($texttagkey ne "") {
+							my @values = split(',', $texttagkey);
+							my $t1 = 0;
+							$query .= " AND (";
+							foreach my $val (@values) {
+								$val = trim($val);
+								$val =~ s{\'}{\\}g;
+								if ($t1 == 0) {
+									$t1 = 1;
+									$query .= "tags like '%$val%'";
+								} else {
+									$query .= " OR tags like '%$val%'";
+								}
+							}
+							$query .= ")";
+						}
+						
+						if ($topickey ne "") {
+							my @values = split(',', $topickey);
+							my $t1 = 0;
+							$query .= " AND (";
+							foreach my $val (@values) {
+								$val = trim($val);
+								$val =~ s{\'}{\\}g;
+								if ($t1 == 0) {
+									$t1 = 1;
+									$query .= "topic like '%$val%'";
+								} else {
+									$query .= " OR topic like '%$val%'";
+								}
+							}
+							$query .= ")";
+						}
+						
+						if ($discussionkey ne "") {
+							my @values = split(',', $discussionkey);
+							my $t1 = 0;
+							$query .= " AND (";
+							foreach my $val (@values) {
+								$val = trim($val);
+								$val =~ s{\'}{\\}g;
+								if ($t1 == 0) {
+									$t1 = 1;
+									$query .= "discussion like '%$val%'";
+								} else {
+									$query .= " OR discussion like '%$val%'";
+								}
+							}
+							$query .= ")";
+						}
+						
+						if ($sourcekey ne "") {
+							my @values = split(',', $sourcekey);
+							my $t1 = 0;
+							$query .= " AND (";
+							foreach my $val (@values) {
+								$val = trim($val);
+								$val =~ s{\'}{\\}g;
+								if ($t1 == 0) {
+									$t1 = 1;
+									$query .= "source like '%$val%'";
+								} else {
+									$query .= " OR source like '%$val%'";
+								}
+							}
+							$query .= ")";
+						}
+						
+						$query .= " AND showme=1 ORDER BY id DESC";
+						$sth = $dbh->prepare($query);
+						$sth->execute();
+						my $countres = $sth->rows;
+						print "<tr><td><a class=\"edit_button\">Found $countres Results</a><br><br></td></tr>";
+						my $turn = 0;
+						while (my $ref = $sth->fetchrow_hashref()) {
+							
+							my $id = $ref->{'id'};
+							my $category = $ref->{'category'};
+							my $topic = $ref->{'topic'};
+							my $showuser = $ref->{'username'};
+							my $discussion = $ref->{'discussion'};
+							my $source = $ref->{'source'};
+							my $date = $ref->{'date'};
+							my $tags = $ref->{'tags'};
+							if ($ref->{'public'} == 0) {
+								$shared = "Private";
+							} else {
+								$shared = "Public";
+							}
+							print "<tr><td>";
+							if ($turn == 0) {
+								$turn = 1;
+								print "<p class=\"one\">";
+							} else {
+								$turn = 0;
+								print "<p class=\"two\">";
+							}
+							print '<img src="images/note.jpg" alt="Note View" style="width:20px;height:20px;">';
+							print "<a href=\"view.cgi\" class=\"heading_link\"><text class=\"headings\">$id. $topic</text></a><a class=\"edit_button\" href=\"view.cgi\">";
+							print '<img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a><br>';
+							print "<text class=\"date\">$date by <a href=\"profile.cgi?id=$userinfo{$showuser}\" class=\"heading_link\" target=\"_blank\">$showuser</a> (Shared: $shared)</text><br/>";
+							my $string = "categoryview.cgi?showmycategory=$category";
+							encode_entities($string);
+							print "<a class=\"category_button\" href=\"$string\" target=\"_blank\">Category: $category</a><br><br>";
+							print "<textarea readonly class=\"discussion\">$discussion</textarea><br>";
+							print '<text class="information">Sources:</text>';
+							my @values = split(',', $source);
+							foreach my $val (@values) {
+								$val = trim($val);
+								print "<a class=\"source_button\" href=\"$val\">$val</a>&nbsp;";
+							}
+							print '<br><text class="information">Tags:</text>';
+							my @values = split(',', $tags);
+							foreach my $val (@values) {
+								$val = trim($val);
+								my $string = "tagview.cgi?showmytag=$val";
+   								encode_entities($string);
+								print "<a class=\"tag_button\" href=\"$string\" target=\"_blank\">$val</a>&nbsp;";
+							}
+							print '<br>
+									</p>
+								</td>
+							</tr>';
+						}
+					} else {
+						print "<tr><td><a class=\"edit_button\">Found 0 Results</a><br><br></td></tr>";
+					}
+			} else {
+				print "<tr><td><font color=\"red\">Nothing recieved</font></td></tr>";
+			}
+			
+		print '</table>
 	</body>
 	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">©2015 My Blue Sky Labs, powered by Vishwadeep Singh</text></div>
 	<hr width="65%">

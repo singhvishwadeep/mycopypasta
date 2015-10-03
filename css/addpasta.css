@@ -2,10 +2,10 @@
     width: 60%;
     height: auto;
     overflow: hidden;
-    background: -webkit-linear-gradient(white, skyblue); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(white, skyblue); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(white, skyblue); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(white, skyblue); /* Standard syntax (must be last) */
+    background: -webkit-linear-gradient(skyblue, white ); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(skyblue, white ); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(skyblue, white ); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(skyblue, white ); /* Standard syntax (must be last) */
     border-radius: 6px;
     margin: 50px auto;
     box-shadow: 0px 0px 50px rgba(0,0,0,.8);

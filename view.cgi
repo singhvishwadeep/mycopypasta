@@ -34,6 +34,12 @@ if($ssid eq "") {
 	}
 }
 
+sub  trim { 
+	my $s = shift;
+	$s =~ s/^\s+|\s+$//g;
+	return $s;
+}
+
 #if ($login == 0) {
 #	my $url="login.cgi";
 #	my $t=0; # time until redirect activates
@@ -183,11 +189,13 @@ print '<html lang="en-US">
 					print '<text class="information">Sources:</text>';
 					my @values = split(',', $source);
 					foreach my $val (@values) {
+						$val = trim($val);
 						print "<a class=\"source_button\" href=\"$val\">$val</a>&nbsp;";
 					}
 					print '<br><text class="information">Tags:</text>';
 					my @values = split(',', $tags);
 					foreach my $val (@values) {
+						$val = trim($val);
 						my $string = "tagview.cgi?showmytag=$val";
    						encode_entities($string);
 						print "<a class=\"tag_button\" href=\"$string\" target=\"_blank\">$val</a>&nbsp;";
@@ -275,11 +283,13 @@ print '<html lang="en-US">
 					print '<text class="information">Sources:</text>';
 					my @values = split(',', $source);
 					foreach my $val (@values) {
+						$val = trim($val);
 						print "<a class=\"source_button\" href=\"$val\">$val</a>&nbsp;";
 					}
 					print '<br><text class="information">Tags:</text>';
 					my @values = split(',', $tags);
 					foreach my $val (@values) {
+						$val = trim($val);
 						my $string = "tagview.cgi?showmytag=$val";
    						encode_entities($string);
 						print "<a class=\"tag_button\" href=\"$string\" target=\"_blank\">$val</a>&nbsp;";

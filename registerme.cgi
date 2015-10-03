@@ -46,9 +46,6 @@ if ($login == 1) {
 	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 } else {
 
-
-
-
 	my $username=param('username');
 	my $name=param('name');
 	my $password=param('password');
