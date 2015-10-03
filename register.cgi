@@ -134,13 +134,27 @@ if ($login == 1) {
 					</td>
 				</tr>
 			</table>';
-			
 			print '<section class="registerdata">
 				<div class="loginbox">Register yourself in Copy-Pasta</div>
+				<text class="fontdec" style="padding:12px">Note:</text> <ul>
+				  <li><b>username and password</b> must have minimum 6 characters.</li>
+				  <li>only char, numbers, dot and underscore are allowed in <b>username</b>.</li>
+				  <li>You should choose proper <b>email id</b>, for future references.</li>
+				  <li><b>Identity Lock</b> can be any word or sentence which you think is unique to you like:
+				  	<ul>
+				      <li>Trust ME, I am an Engineer.</li>
+				      <li>Yahooo!</li>
+				    </ul>
+				  </li>
+				  <li><b>Identity Lock</b> is a string/identifier which will be used for identification in password recovery.</li>
+				  <li><b>Security Question and Answer</b> is also necessary for password recovery.</li>
+				  <li><b>Please</b> try to give proper information and donot misuse the application.</li>
+				</ul>
+				<br />
 				<form action="registerme.cgi" onsubmit="return myFunction()" METHOD="post" ENCTYPE="multipart/form-data">
 					<table>
 					<tr><td><text class="fontdec">Username</text></td>
-			    		<td><input type="text" title="username" placeholder="only underscore and dot allowed with chars/num" pattern="^([A-Za-z]|[0-9]|_|\.)+$" style="width:100%" name="username" maxlength="64" required></td></tr>
+			    		<td><input type="text" title="username" placeholder="only underscore and dot allowed with chars/num (minimum 6)" pattern="^([A-Za-z]|[0-9]|_|\.){6,}$" style="width:100%" name="username" maxlength="64" required></td></tr>
 					<tr><td><text class="fontdec">Password</text></td>
 			    		<td><input type="password" title="password" placeholder="minimum 6 characters" style="width:100%" name="password" id="password" maxlength="64" pattern=".{6,}" required></td></tr>
 			    	<tr><td><text class="fontdec">Retype Password</text></td>

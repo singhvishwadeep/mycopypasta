@@ -39,9 +39,8 @@ print '<html lang="en-US">
 		<link rel="shortcut icon" href="images/newlogo.ico">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
-		<link rel="stylesheet" type="text/css" href="css/paragraph.css">
 		<link rel="stylesheet" type="text/css" href="css/registerpasta.css">
-			<link rel="stylesheet" type="text/css" href="css/addpasta.css">
+		<link rel="stylesheet" type="text/css" href="css/addpasta.css">
 		<div id="fb-root"></div>
 		<script>(function(d, s, id) {
 			  var js, fjs = d.getElementsByTagName(s)[0];
@@ -84,10 +83,26 @@ print '<html lang="en-US">
 				</td>
 			</tr>
 		<tr><td>
-		<!-- Facebook Badge START -->
-		<a href="https://www.facebook.com/mycopypasta" title="My Copy-Pasta" style="font-family: &quot;lucida grande&quot;,tahoma,verdana,arial,sans-serif; font-size: 11px; font-variant: normal; font-style: normal; font-weight: normal; color: #3B5998; text-decoration: none;" target="_TOP">My Copy-Pasta</a>
-		<br /><a href="https://www.facebook.com/mycopypasta" title="My Copy-Pasta" target="_TOP">
-		<img class="img" src="https://badge.facebook.com/badge/1505964906363256.11050.193534457.png" style="border: 1px;" alt="" /></a><!-- Facebook Badge END -->
+		
+		
+		<div class=\'container2\'>
+			<div>
+				<img width="440px" alt="My Copy-Pasta" border="2" class=\'iconDetails_contact\' src="images/show.jpg">
+    		</div>	
+			<div style=\'margin-left:60px;text-align: justify;\'>
+				<text class="fontdec" style="padding:10px;"><font size="6">Let&#39;s get Together</font></text><br>
+				<p><text class="fontdec" style="padding:10px;">Hello,</text><br></p>
+				<p><text class="fontdec" style="padding:10px;">Myself Vishwadeep Singh (M/29), working in reputed IT company as System Software Engineer II and trying to 
+				figure out different dimensions to solve different problems.</text></p>
+				
+				<p><text class="fontdec" style="padding:10px;">We are here to answer any question you may have about My Copy-Pasta experiences.
+				Reach out to us, and we will respond as soon as possible.</text></p>
+				<p><text class="fontdec" style="padding:10px;">Even if there is something you have always wanted to experience and can&#39;t find it on combadi, let us know and we 
+				promise we&#39;ll do our best to find it for you and send you there.</text></p>
+				<p><text class="fontdec" style="padding:10px;">Contact Us: </text><a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs (myblueskylabs@gmail.com)</a></p>
+			</div>
+		</div>
+		
 		</td>
 		
 		</tr>

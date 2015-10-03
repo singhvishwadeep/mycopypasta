@@ -108,10 +108,31 @@ print '<html lang="en-US">
 			</tr>
 			<tr>
 				<td>
-				<p>My Copy-Pasta. This creation is inspired by several thoughts. It is idea of ideas. We come across with different information daily, but, we don&#39;t keep track of it. As you cannot trust on human mind for storing the information for longer time. Here you can save your daily find outs, logics in your own words and understanding, important web links or bookmarks, important programming syntaxes/uses, manuals, definitions, important dates, and many other things. I had seen lot of branches of science and dealing with different set daily, which makes me learn new things daily. But, slowly I start forgetting these things and loosing track of them. Hence, I thought of building a platform, where you can save anything you want and keep it for future purpose.</p>
-				<p>This tool is written in cgi-perl from scratch and is done in 2 weeks of time frame. For usage, you need to register. After account being activated by admin, you will be able to use it and can start adding your copy-pasta. You can save your copy-pasta in private/public set. Private set can only be accessed by you only, whereas public set can be accessed by any one (any registered user).</p>
-				<p>We are also working on some other projects like pathway traversing tool in C and C++ and Money Management Tool (named &quot;Aukaat&quot;) in cgi-perl. If anyone interested to work in the projects can contact for the same anytime to <a href="mailto:myblueskylabs@gmail.com?Subject=Hello%20My%20Copy%20Pasta%20Team" target="_top">myblueskylabs@gmail.com</a>. We are also looking for investers/sponcers/partners to make this domain live and functional.</1> 
-                                <div class="fb-comments" data-href="http://mycopypasta.myartsonline.com/" data-numposts="100"></div>
+				<p>My Copy-Pasta. The internet is eating your memory, but something better is taking its place</p> 
+				<p>You sometime wishes, you could paste and save your copied information.</p>
+				<p>This creation is inspired by several thoughts. It is the idea of ideas. As we come across with different information daily, but, we 
+				donot keep track of them. You cannot trust on human mind for storing the information for longer time. Here, we are providing you this 
+				platform
+				so that you can save your information like daily find outs, logics in your own words and understanding, important web links or bookmarks, 
+				important programming syntaxes/uses, manuals, definitions, important dates, and many other things.</p>
+				
+				<p>In my lifetime I had seen lot of branches of science 
+				and still dealing with different dimensions of problems, 
+				which makes me learn new things daily. But, slowly I start forgetting those solutions and loosing track of them. Hence, I thought of 
+				building a platform, where you can save anything you want and keep it for future purpose.</p>
+				<p>This tool is written in cgi-perl from scratch and is done in 2 weeks of time frame. For usage, you need to <a href="register.cgi">register</a> 
+				with proper username and password. After logging in, you can add your copy-pasta with proper topic and discussion with sources and tags.
+				This will be saved as proper id, which can only be accesed by your account. There is an option to save your copy-pasta 
+				in private/public set also, in which private is by default. 
+				Private set can only be accessed by you only, whereas public set can be accessed by any one. After saving your information, you can also
+				search them in future by wild card search, or directly ID search, or advance search with lot of parameters.
+				More organised you save, better search results you will get.</p>
+				<p>We are also working on some other projects like pathway traversing tool in C and C++ and Money Management Tool 
+				(named &quot;Aukaat&quot;) 
+				in cgi-perl. If anyone interested to work in the projects can contact for the same anytime to 
+				<a href="mailto:myblueskylabs@gmail.com?Subject=Hello%20My%20Copy%20Pasta%20Team" target="_top">myblueskylabs@gmail.com</a>. 
+				 
+                <div class="fb-comments" data-href="http://mycopypasta.myartsonline.com/" data-numposts="100"></div>
 				</td>
 			</tr>
 		</table>

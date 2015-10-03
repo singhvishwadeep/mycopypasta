@@ -177,6 +177,12 @@ text.information {
 	width:120px;	
 } 
 
+.iconDetails_contact {
+	margin-left:2%;
+	float:left; 
+	width:360px;	
+}
+
 .container2 {
 	width:100%;
 	height:auto;
