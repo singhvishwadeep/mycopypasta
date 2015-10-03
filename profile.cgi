@@ -4,6 +4,7 @@ use CGI::Carp qw/fatalsToBrowser warningsToBrowser/;
 use CGI::Cookie;
 use CGI::Session;
 use DBI;
+use HTML::Entities;
 
 # new cgi query
 my $q = new CGI;
@@ -14,6 +15,11 @@ print $q->header;
 # login error or not
 my $err = 0;
 
+sub  trim { 
+	my $s = shift;
+	$s =~ s/^\s+|\s+$//g;
+	return $s;
+}
 
 # proper logged in?
 my $login = 0;
@@ -206,11 +212,51 @@ if ($login == 0) {
 				    			<a href=\"updatepassword.cgi?id=$profileid\" class=\"button\">Click to update password</a><br /><br />";
 				    			
 				    			if ($account eq "admin account") {
-					    			print "<text class=\"fontdec\">Update Password</text>
+					    			print "<text class=\"fontdec\">Pending Account Activations</text>
 					    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					    			<a href=\"activateaccount.cgi\" class=\"button\">Click for Pending Account Activations</a><br /><br />";
 				    			}
+				    			if ($session->param('logged_in_user_mycp') eq "admin" && $session->param('logged_in_userid_mycp') ne $profileid) {
+					    			print "<text class=\"fontdec\">Deactivate this account</text>
+						    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						    			<a href=\"deactivateaccount.cgi?id=$profileid\" class=\"button\">Deactivate this account</a><br /><br />";
+				    			}
+				    			
 				    			print "</form>
+				    		</div>
+						</div>
+		    			</section>";
+		    			$sth = $dbh->prepare("SELECT category,count FROM categoryinfo where userid='$profileid'");
+						$sth->execute();
+						print "</table><section class=\"registerdata\">
+							<div class=\"loginbox\">Total Category Inputs</div><form>";
+							
+		    			while (my $ref = $sth->fetchrow_hashref()) {
+		    				my $string = "categoryview.cgi?showmycategory=$ref->{'category'}";
+							encode_entities($string);
+		    				print "<a href =\"$string\"><text class=\"fontdec\">$ref->{'category'}</text></a>
+				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    			<input type=\"text\" style=\"width:60%\" value=\"$ref->{'count'}\" readonly><br /><br />";
+						}
+		    			print "</form>
+				    		</div>
+						</div>
+		    			</section>";
+		    			
+		    			$sth = $dbh->prepare("SELECT tag,tagcount FROM taginfo where userid='$profileid'");
+						$sth->execute();
+						print "<section class=\"registerdata\">
+							<div class=\"loginbox\">Total Tag Inputs</div><form>";
+							
+		    			while (my $ref = $sth->fetchrow_hashref()) {
+		    				$val = trim($ref->{'tag'});
+							my $string = "tagview.cgi?showmytag=$val";
+	   						encode_entities($string);
+		    				print "<a href =\"$string\"><text class=\"fontdec\">$ref->{'tag'}</text></a>
+				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				    			<input type=\"text\" style=\"width:60%\" value=\"$ref->{'tagcount'}\" readonly><br /><br />";
+						}
+		    			print "</form>
 				    		</div>
 						</div>
 		    			</section>";

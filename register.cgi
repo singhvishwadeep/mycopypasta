@@ -137,7 +137,7 @@ if ($login == 1) {
 			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			    		<input type="text" title="email" placeholder="proper email address" style="width:70%" name="email" id="email" maxlength="512" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required><br /><br />
 			    	<text class="fontdec">Display Picture</text>
-			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<INPUT size=70 TYPE="file" name="file" accept=\".gif\"> (gif only, optional)<br /><br />
+			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input size=70 id="fileInput" name="file" type="file" onchange="AlertFilesize();" accept=\".gif\" disabled/> <text class="fontdec">(DISABLED)</font><br /><br />
 			    	<text class="fontdec">Date of birth</text>
 			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			    		<input type="date" title="dob" style="width:70%" name="dob" id="dob" maxlength="128" required><br /><br />
