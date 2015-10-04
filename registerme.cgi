@@ -175,8 +175,7 @@ if ($login == 1) {
 				my $ip = $ENV{REMOTE_ADDR};
 				my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 				my $dbh = DBI->connect($dsn,"root","");
-				print "INSERT into userdatabase ( myusername,mydob,name,mypassword,registeredip,registereddate,myemail,myidentitylock,mysecurityquestion,mysecurityanswer,myprofession,myplace ) VALUES ( '$username','$dob', '$name','$password', '$ip',NOW(),'$email','$identitylock','$secquestion','$secanswer','$occupation','$place')<br><br>";
-				$sth = $dbh->prepare("INSERT into userdatabase ( myusername,mydob,name,mypassword,registeredip,registereddate,myemail,myidentitylock,mysecurityquestion,mysecurityanswer,myprofession,myplace ) VALUES ( '$username','$dob', '$name','$password', '$ip',NOW(),'$email','$identitylock','$secquestion','$secanswer','$occupation','$place')");
+				$sth = $dbh->prepare("INSERT into userdatabase ( myusername,mydob,name,mypassword,registeredip,registereddate,myemail,myidentitylock,mysecurityquestion,mysecurityanswer,myprofession,myplace,activeaccount ) VALUES ( '$username','$dob', '$name','$password', '$ip',NOW(),'$email','$identitylock','$secquestion','$secanswer','$occupation','$place','1')");
 				$sth->execute();
 				$sth->finish();
 				
@@ -220,7 +219,7 @@ if ($login == 1) {
 					unlink $directory_filename;
 				}
 	
-				print "<tr><td><font color=\"green\">Congratulations. $username got registered with us. Wait for admin to activate your account. Try <a href=\"login.cgi\">Login Here</a></font></td></tr>";
+				print "<tr><td><font color=\"green\">Congratulations. $username got registered with us. Admin has also activated your account. Try <a href=\"login.cgi\">Login Here</a></font></td></tr>";
 			} else {
 					my $url="index.cgi";
 					my $t=0; # time until redirect activates

@@ -138,7 +138,7 @@ if ($login == 0) {
 					my $userid = $ref->{'id'};
 					my $username = $ref->{'myusername'};
 					my $name = $ref->{'name'};
-					print "<input type=checkbox name=list value=\"$userid\"><a href=\"profile.cgi?id=$userid\" target=\"_blank\">$name</a><br />";
+					print "<input type=checkbox name=list value=\"$userid\"><a href=\"profile.cgi?id=$userid\" target=\"_blank\">$name $userid</a><br />";
 				}
 				
 			print '<input type="submit" name="submit" alt="search" value="Activate Accounts"></form></td></tr></table></body>

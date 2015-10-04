@@ -171,74 +171,62 @@ if ($login == 0) {
 			    		</div>	
 						<div style='margin-left:60px;'>
 		    				<form>
-								<text class=\"fontdec\">Username</text>
-				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    			<input type=\"text\" style=\"width:60%\" value=\"$myusername\" readonly><br /><br />
+		    					<table>
+								<tr><td><text class=\"fontdec\">Username</text></td>
+				    			<td><input type=\"text\" style=\"width:100%\" value=\"$myusername\" readonly></td></tr>
 				    			
-				    			<text class=\"fontdec\">Name</text>
-				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    			<input type=\"text\" style=\"width:60%\" value=\"$name\" readonly><br /><br />
+				    			<tr><td><text class=\"fontdec\">Name</text></td>
+				    			<td><input type=\"text\" style=\"width:100%\" value=\"$name\" readonly></td></tr>
 				    			
-				    			<text class=\"fontdec\">Email</text>
-				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    			<input type=\"text\" style=\"width:60%\" value=\"$myemail\" readonly><br /><br />
+				    			<tr><td><text class=\"fontdec\">Email</text></td>
+				    			<td><input type=\"text\" style=\"width:100%\" value=\"$myemail\" readonly></td></tr>
 				    			
-				    			<text class=\"fontdec\">Date of Birth</text>
-				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    			<input type=\"text\" style=\"width:60%\" value=\"$mydob\" readonly><br /><br />
+				    			<tr><td><text class=\"fontdec\">Date of Birth</text></td>
+				    			<td><input type=\"text\" style=\"width:100%\" value=\"$mydob\" readonly></td></tr>
 				    			
-				    			<text class=\"fontdec\">Occupation</text>
-				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    			<input type=\"text\" style=\"width:60%\" value=\"$myprofession\" readonly><br /><br />
+				    			<tr><td><text class=\"fontdec\">Occupation</text></td>
+				    			<td><input type=\"text\" style=\"width:100%\" value=\"$myprofession\" readonly></td></tr>
 				    			
-				    			<text class=\"fontdec\">Place</text>
-				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    			<input type=\"text\" style=\"width:60%\" value=\"$myplace\" readonly><br /><br />
+				    			<tr><td><text class=\"fontdec\">Place</text></td>
+				    			<td><input type=\"text\" style=\"width:100%\" value=\"$myplace\" readonly></td></tr>
 				    			
-				    			<text class=\"fontdec\">Account Reg. Date</text>
-				    				&nbsp;&nbsp;
-				    			<input type=\"text\" style=\"width:60%\" value=\"$registereddate\" readonly><br /><br />
+				    			<tr><td><text class=\"fontdec\">Account Reg. Date</text></td>
+				    			<td><input type=\"text\" style=\"width:100%\" value=\"$registereddate\" readonly></td></tr>
 				    			
-				    			<text class=\"fontdec\">Account Type</text>
-				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    			<input type=\"text\" style=\"width:60%\" value=\"$account\" readonly><br /><br />
+				    			<tr><td><text class=\"fontdec\">Account Type</text></td>
+				    			<td><input type=\"text\" style=\"width:100%\" value=\"$account\" readonly></td></tr>
 				    			
-				    			<text class=\"fontdec\">Account State</text>
-				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    			<input type=\"text\" style=\"width:60%;background:$acntcol\" value=\"$acntstate\" readonly><br /><br />
+				    			<tr><td><text class=\"fontdec\">Account State</text></td>
+				    			<td><input type=\"text\" style=\"width:100%;background:$acntcol\" value=\"$acntstate\" readonly></td></tr>
 				    			
-				    			<text class=\"fontdec\">Update Password</text>
-				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    			<a href=\"updatepassword.cgi?id=$profileid\" class=\"button\">Click to update password</a><br /><br />";
+				    			<tr><td><text class=\"fontdec\">Update Password</text></td>
+				    			<td><a href=\"updatepassword.cgi?id=$profileid\" class=\"button\">Click to update password</a></td></tr>";
 				    			
-				    			if ($account eq "admin account") {
-					    			print "<text class=\"fontdec\">Pending Account Activations</text>
-					    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					    			<a href=\"activateaccount.cgi\" class=\"button\">Click for Pending Account Activations</a><br /><br />";
+				    			if ($session->param('logged_in_user_mycp') eq "admin" && $myusername eq "admin") {
+					    			print "<tr><td><text class=\"fontdec\">Pending Account Activations</text></td>
+					    			<td><a href=\"activateaccount.cgi\" class=\"button\">Click for Pending Account Activations</a></td></tr>";
 				    			}
-				    			if ($session->param('logged_in_user_mycp') eq "admin" && $session->param('logged_in_userid_mycp') ne $profileid) {
-					    			print "<text class=\"fontdec\">Deactivate this account</text>
-						    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						    			<a href=\"deactivateaccount.cgi?id=$profileid\" class=\"button\">Deactivate this account</a><br /><br />";
+				    			if ($session->param('logged_in_user_mycp') eq "admin" && $myusername ne "admin") {
+					    			print "<tr><td><text class=\"fontdec\">Deactivate this account</text></td>
+						    			<td><a href=\"deactivateaccount.cgi?id=$profileid\" class=\"button\">Deactivate this account</a></td></tr>";
 				    			}
 				    			
-				    			print "</form>
+				    			print "</table></form>
 				    		</div>
 						</div>
 		    			</section>";
 		    			$sth = $dbh->prepare("SELECT category,count FROM categoryinfo where userid='$profileid'");
 						$sth->execute();
-						print "</table><section class=\"registerdata\">
-							<div class=\"loginbox\">Total Category Inputs</div><form>";
+						print "<section class=\"registerdata\">
+							<div class=\"loginbox\">Your total Category Inputs</div><form><table>";
 							
 		    			while (my $ref = $sth->fetchrow_hashref()) {
 		    				my $string = "categoryview.cgi?showmycategory=$ref->{'category'}";
 							encode_entities($string);
-		    				print "<a href =\"$string\"><text class=\"fontdec\">$ref->{'category'}</text></a>
-				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    			<input type=\"text\" style=\"width:60%\" value=\"$ref->{'count'}\" readonly><br /><br />";
+		    				print "<tr><td><a href =\"$string\"><text class=\"fontdec\">$ref->{'category'}</text></a></td>
+				    			<td><input type=\"text\" style=\"width:100%\" value=\"$ref->{'count'}\" readonly></td></tr>";
 						}
-		    			print "</form>
+		    			print "</table></form>
 				    		</div>
 						</div>
 		    			</section>";
@@ -246,17 +234,16 @@ if ($login == 0) {
 		    			$sth = $dbh->prepare("SELECT tag,tagcount FROM taginfo where userid='$profileid'");
 						$sth->execute();
 						print "<section class=\"registerdata\">
-							<div class=\"loginbox\">Total Tag Inputs</div><form>";
+							<div class=\"loginbox\">Your total Tag Inputs</div><form><table>";
 							
 		    			while (my $ref = $sth->fetchrow_hashref()) {
 		    				$val = trim($ref->{'tag'});
 							my $string = "tagview.cgi?showmytag=$val";
 	   						encode_entities($string);
-		    				print "<a href =\"$string\"><text class=\"fontdec\">$ref->{'tag'}</text></a>
-				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    			<input type=\"text\" style=\"width:60%\" value=\"$ref->{'tagcount'}\" readonly><br /><br />";
+		    				print "<tr><td><a href =\"$string\"><text class=\"fontdec\">$ref->{'tag'}</text></a></td>
+				    			<td><input type=\"text\" style=\"width:100%\" value=\"$ref->{'tagcount'}\" readonly></td></tr>";
 						}
-		    			print "</form>
+		    			print "</table></form>
 				    		</div>
 						</div>
 		    			</section>";

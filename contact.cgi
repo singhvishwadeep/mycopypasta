@@ -102,13 +102,17 @@ print '<html lang="en-US">
 		while (my $ref = $sth->fetchrow_hashref()) {
 			$categoryinfo{$ref->{'category'}} = $categoryinfo{$ref->{'category'}}+$ref->{'count'};
 		}
+		print "<table>";
 		foreach $key (sort(keys %categoryinfo)) {
+			if ($categoryinfo{$key} == 0) {
+				next;
+			}
 			my $string = "categoryview.cgi?showmycategory=$key";
 			encode_entities($string);
-	        print "<a href =\"$string\"><text class=\"fontdec\">$key</text></a>
-    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    			<input type=\"text\" style=\"width:60%\" value=\"$categoryinfo{$key}\" readonly><br /><br />";
+	        print "<tr><td><a href =\"$string\"><text class=\"fontdec\">$key</text></a></td><td>
+    			<input type=\"text\" value=\"$categoryinfo{$key}\" readonly></td></tr>";
 	    }
+	    print "</table>";
 	    print "</form>
 			   </div>
 		</div>
@@ -122,13 +126,17 @@ print '<html lang="en-US">
 		while (my $ref = $sth->fetchrow_hashref()) {
 			$taginfo{$ref->{'tag'}} = $taginfo{$ref->{'tag'}}+$ref->{'tagcount'};
 		}
+		print "<table>";
 		foreach $key (sort(keys %taginfo)) {
+			if ($taginfo{$key} == 0) {
+				next;
+			}
 			my $string = "categoryview.cgi?showmycategory=$key";
 			encode_entities($string);
-	        print "<a href =\"$string\"><text class=\"fontdec\">$key</text></a>
-    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    			<input type=\"text\" style=\"width:60%\" value=\"$taginfo{$key}\" readonly><br /><br />";
+	        print "<tr><td><a href =\"$string\"><text class=\"fontdec\">$key</text></a></td><td>
+    			<input type=\"text\" value=\"$taginfo{$key}\" readonly></td></tr>";
 	    }
+	    print "</table>";
 	    print "</form>
 			   </div>
 		</div>

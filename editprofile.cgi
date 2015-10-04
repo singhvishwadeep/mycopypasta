@@ -61,6 +61,23 @@ if ($login == 0 || $profileid eq "") {
 				  fjs.parentNode.insertBefore(js, fjs);
 				}(document, \'script\', \'facebook-jssdk\'));
 			</script>
+			<script type="text/javascript">
+			function AlertFilesize(){
+			    if(window.ActiveXObject){
+			        var fso = new ActiveXObject("Scripting.FileSystemObject");
+			        var filepath = document.getElementById(\'fileInput\').value;
+			        var thefile = fso.getFile(filepath);
+			        var sizeinbytes = thefile.size;
+			    }else{
+			        var sizeinbytes = document.getElementById(\'fileInput\').files[0].size;
+			    }
+			
+			    var fSExt = new Array(\'Bytes\', \'KB\', \'MB\', \'GB\');
+			    fSize = sizeinbytes; i=0;while(fSize>900){fSize/=1024;i++;}
+			
+			    alert((Math.round(fSize*100)/100)+\' \'+fSExt[i]);
+			}
+			</script>
 		</head>
 		
 		<body>
@@ -146,44 +163,34 @@ if ($login == 0 || $profileid eq "") {
 				print "</table><section class=\"registerdata\">
 					<div class=\"loginbox\">Edit your Copy-Pasta Profile</div>
 					<form action=\"editme.cgi\" METHOD=\"post\" ENCTYPE=\"multipart/form-data\">
-						<text class=\"fontdec\">Username</text>
-				    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    		<input type=\"text\" style=\"width:70%;background:grey\" name=\"username\" value=\"$username\" readonly><br /><br />
-				    	<text class=\"fontdec\">Profile ID</text>
-				    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    		<input type=\"text\" style=\"width:70%;background:grey\" name=\"id\" value=\"$profileid\" readonly><br /><br />
-				    	<text class=\"fontdec\">Name</text>
-				    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    		<input type=\"text\" title=\"name\" placeholder=\"your name\" value=\"$name\" style=\"width:70%\" name=\"name\" id=\"name\" maxlength=\"256\" required><br /><br />
-				    	<text class=\"fontdec\">Email</text>
-				    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    		<input type=\"text\" title=\"email\" placeholder=\"proper email address\" style=\"width:70%;background:grey\" name=\"email\" id=\"email\" maxlength=\"512\" value=\"$email\" ";
+					<table>
+						<tr><td><text class=\"fontdec\">Username</text></td>
+				    		<td><input type=\"text\" style=\"width:70%;background:grey\" name=\"username\" value=\"$username\" readonly></td></tr>
+				    	<tr><td><text class=\"fontdec\">Profile ID</text></td>
+				    		<td><input type=\"text\" style=\"width:70%;background:grey\" name=\"id\" value=\"$profileid\" readonly></td></tr>
+				    	<tr><td><text class=\"fontdec\">Name</text></td>
+				    		<td><input type=\"text\" title=\"name\" placeholder=\"your name\" value=\"$name\" style=\"width:70%\" name=\"name\" id=\"name\" maxlength=\"256\" required></td></tr>
+				    	<tr><td><text class=\"fontdec\">Email</text></td>
+				    		<td><input type=\"text\" title=\"email\" placeholder=\"proper email address\" style=\"width:70%;background:grey\" name=\"email\" id=\"email\" maxlength=\"512\" value=\"$email\" ";
 				    		print 'pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" ';
-				    		print "readonly><br/><br/>
-				    	<text class=\"fontdec\">Display Picture</text>
-				    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    		<INPUT size=70 TYPE=\"file\" name=\"file\" accept=\".gif\"> (gif only, optional)<br /><br />
-				    	<text class=\"fontdec\">Date of birth</text>
-				    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    		<input type=\"text\" title=\"dob\" style=\"width:70%\" name=\"dob\" id=\"dob\" value=\"$dob\" maxlength=\"128\" required><br /><br />
-				    	<text class=\"fontdec\">Identity Lock</text>
-				    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    		<input type=\"text\" title=\"identitylock\" placeholder=\"your identitylock (unique to your identity)\" value=\"$identitylock\" style=\"width:70%\" name=\"identitylock\" id=\"identitylock\" maxlength=\"64\" placeholder=\"any private key (64c) another than password, no special chars\" required><br /><br />
-						<text class=\"fontdec\">Security Question</text>
-				    		&nbsp;&nbsp;&nbsp;&nbsp;
-				    		<input type=\"text\" title=\"secquestion\" style=\"width:70%\" name=\"secquestion\" id=\"secquestion\" placeholder=\"your security (used in case of password misplace), 128 characters\" maxlength=\"128\" value=\"$secquestion\"  required><br /><br />
-				    	<text class=\"fontdec\">Security Answer</text>
-				    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    		<input type=\"text\" title=\"secanswer\" style=\"width:70%\" name=\"secanswer\" id=\"secanswer\" placeholder=\"your security answer for above question, 128 characters\" maxlength=\"128\" value=\"$secanswer\" required><br /><br />
-				    	<text class=\"fontdec\">Occupation</text>
-				    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    		<input type=\"text\" title=\"occupation\" style=\"width:70%\" name=\"occupation\" maxlength=\"128\" placeholder=\"Profession like Student/Doctor/Engineer\" value=\"$occupation\" required><br /><br />
-				    	<text class=\"fontdec\">Place</text>
-				    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    		<input type=\"text\" title=\"place\" style=\"width:70%\" name=\"place\" maxlength=\"128\" placeholder=\"Current Reciding City Or State\" value=\"$place\"  required><br /><br />
-				    	<text class=\"fontdec\">Account Type</text>
-				    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				    			<input type=\"text\" style=\"width:70%;background:grey\" value=\"$account\" readonly><br /><br />
+				    		print "readonly></td></tr>
+				    	<tr><td><text class=\"fontdec\">Display Picture</text></td>
+				    		<td><input size=70 id=\"fileInput\" name=\"file\" type=\"file\" onchange=\"AlertFilesize();\" accept=\".gif\" disabled/> <text style=\"color:red\">(currently disabled)</text></td></tr>
+				    	<tr><td><text class=\"fontdec\">Date of birth</text></td>
+				    		<td><input type=\"text\" title=\"dob\" style=\"width:70%\" name=\"dob\" id=\"dob\" value=\"$dob\" maxlength=\"128\" required></td></tr>
+				    	<tr><td><text class=\"fontdec\">Identity Lock</text></td>
+				    		<td><input type=\"text\" title=\"identitylock\" placeholder=\"your identitylock (unique to your identity)\" value=\"$identitylock\" style=\"width:70%\" name=\"identitylock\" id=\"identitylock\" maxlength=\"64\" placeholder=\"any private key (64c) another than password, no special chars\" required></td></tr>
+						<tr><td><text class=\"fontdec\">Security Question</text></td>
+				    		<td><input type=\"text\" title=\"secquestion\" style=\"width:70%\" name=\"secquestion\" id=\"secquestion\" placeholder=\"your security (used in case of password misplace), 128 characters\" maxlength=\"128\" value=\"$secquestion\"  required></td></tr>
+				    	<tr><td><text class=\"fontdec\">Security Answer</text></td>
+				    		<td><input type=\"text\" title=\"secanswer\" style=\"width:70%\" name=\"secanswer\" id=\"secanswer\" placeholder=\"your security answer for above question, 128 characters\" maxlength=\"128\" value=\"$secanswer\" required></td></tr>
+				    	<tr><td><text class=\"fontdec\">Occupation</text></td>
+				    		<td><input type=\"text\" title=\"occupation\" style=\"width:70%\" name=\"occupation\" maxlength=\"128\" placeholder=\"Profession like Student/Doctor/Engineer\" value=\"$occupation\" required></td></tr>
+				    	<tr><td><text class=\"fontdec\">Place</text></td>
+				    		<td><input type=\"text\" title=\"place\" style=\"width:70%\" name=\"place\" maxlength=\"128\" placeholder=\"Current Reciding City Or State\" value=\"$place\"  required></td></tr>
+				    	<tr><td><text class=\"fontdec\">Account Type</text></td>
+				    		<td><input type=\"text\" style=\"width:70%;background:grey\" value=\"$account\" readonly></td></tr>
+				   </table><br/>
 				    	<input type=\"submit\" class=\"submitbox\" name=\"submit\" alt=\"search\" value=\"Submit Changes\">
 				    	OR</text><br /> <a href=\"deleteprofilebyid.cgi?id=$profileid\" class=\"button_delete\" onclick=\"return confirm('Are you sure you want to delete your account?');\">Delete Your Copy-Pasta account</a><br /><br />
 				    </form>

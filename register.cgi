@@ -83,6 +83,24 @@ if ($login == 1) {
 			    return ok;
 			}
 			</script>
+			
+			<script type="text/javascript">
+			function AlertFilesize(){
+			    if(window.ActiveXObject){
+			        var fso = new ActiveXObject("Scripting.FileSystemObject");
+			        var filepath = document.getElementById(\'fileInput\').value;
+			        var thefile = fso.getFile(filepath);
+			        var sizeinbytes = thefile.size;
+			    }else{
+			        var sizeinbytes = document.getElementById(\'fileInput\').files[0].size;
+			    }
+			
+			    var fSExt = new Array(\'Bytes\', \'KB\', \'MB\', \'GB\');
+			    fSize = sizeinbytes; i=0;while(fSize>900){fSize/=1024;i++;}
+			
+			    alert((Math.round(fSize*100)/100)+\' \'+fSExt[i]);
+			}
+			</script>
 		</head>
 		
 		<body>
@@ -120,47 +138,35 @@ if ($login == 1) {
 			print '<section class="registerdata">
 				<div class="loginbox">Register yourself in Copy-Pasta</div>
 				<form action="registerme.cgi" onsubmit="return myFunction()" METHOD="post" ENCTYPE="multipart/form-data">
-					<text class="fontdec">Username</text>
-			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<input type="text" title="username" placeholder="username (no special characters only underscore allowed, 64 characters)" pattern="^([A-Za-z]|[0-9]|_)+$" style="width:70%" name="username" maxlength="64" required><br /><br />
-					<text class="fontdec">Password</text>
-			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<input type="password" title="password" placeholder="minimum 6 characters" style="width:70%" name="password" id="password" maxlength="64" pattern=".{6,}" required><br /><br />
-			    	<text class="fontdec">Retype Password</text>
-			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<input type="password" title="repassword" placeholder="retype your password (minimum 6 characters)" style="width:70%" name="repassword" id="repassword" maxlength="64" pattern=".{6,}"  required><br />
-			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="passwordmsg"></label><br/>
-			    	<text class="fontdec">Name</text>
-			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<input type="text" title="name" placeholder="your name" style="width:70%" name="name" id="name" maxlength="256" required><br /><br />
-			    	<text class="fontdec">Email</text>
-			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<input type="text" title="email" placeholder="proper email address" style="width:70%" name="email" id="email" maxlength="512" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required><br /><br />
-			    	<text class="fontdec">Display Picture</text>
-			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input size=70 id="fileInput" name="file" type="file" onchange="AlertFilesize();" accept=\".gif\" disabled/> <text class="fontdec">(DISABLED)</font><br /><br />
-			    	<text class="fontdec">Date of birth</text>
-			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<input type="date" title="dob" style="width:70%" name="dob" id="dob" maxlength="128" required><br /><br />
-			    	<text class="fontdec">Identity Lock</text>
-			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<input type="text" title="identitylock" placeholder="your identitylock (unique to your identity)" style="width:70%" name="identitylock" id="identitylock" maxlength="64" placeholder="maximum 64 characters, no special characters" required><br /><br />
-					<text class="fontdec">Security Question</text>
-			    		&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<input type="text" title="secquestion" style="width:70%" name="secquestion" id="secquestion" placeholder="your security (used in case of password misplace), 128 characters" maxlength="128" required><br /><br />
-			    	<text class="fontdec">Security Answer</text>
-			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<input type="password" title="secanswer" style="width:70%" name="secanswer" id="secanswer" placeholder="your security answer for above question, 128 characters" maxlength="128" required><br /><br />
-			    	<text class="fontdec">Occupation</text>
-			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<input type="text" title="occupation" style="width:70%" name="occupation" maxlength="128" placeholder="Profession like Student/Doctor/Engineer" required><br /><br />
-			    	<text class="fontdec">Place</text>
-			    		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    		<input type="text" title="place" style="width:70%" name="place" maxlength="128" placeholder="Current Reciding City Or State" required><br /><br />
-			    		
-			    	<text class="fontdec">Account Type</text>
-			    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			    			<input type="text" style="width:70%" value="normal user account" readonly><br /><br />
-			    			
+					<table>
+					<tr><td><text class="fontdec">Username</text></td>
+			    		<td><input type="text" title="username" placeholder="username (no special characters only underscore allowed, 64 characters)" pattern="^([A-Za-z]|[0-9]|_)+$" style="width:100%" name="username" maxlength="64" required></td></tr>
+					<tr><td><text class="fontdec">Password</text></td>
+			    		<td><input type="password" title="password" placeholder="minimum 6 characters" style="width:100%" name="password" id="password" maxlength="64" pattern=".{6,}" required></td></tr>
+			    	<tr><td><text class="fontdec">Retype Password</text></td>
+			    		<td><input type="password" title="repassword" placeholder="retype your password (minimum 6 characters)" style="width:100%" name="repassword" id="repassword" maxlength="64" pattern=".{6,}"  required></td></tr>
+			    	<tr><td></td><td><label id="passwordmsg"></label></td></tr>
+			    	<tr><td><text class="fontdec">Name</text></td>
+			    		<td><input type="text" title="name" placeholder="your name" style="width:100%" name="name" id="name" maxlength="256" required></td></tr>
+			    	<tr><td><text class="fontdec">Email</text></td>
+			    		<td><input type="text" title="email" placeholder="proper email address" style="width:100%" name="email" id="email" maxlength="512" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required></td></tr>
+			    	<tr><td><text class="fontdec">Display Picture</text></td>
+			    		<td><input size=70 id="fileInput" name="file" type="file" onchange="AlertFilesize();" accept=\".gif\" disabled/> <text style="color:red">(currently disabled)</text></td></tr>
+			    	<tr><td><text class="fontdec">Date of birth</text></td>
+			    		<td><input type="date" title="dob" style="width:100%" name="dob" id="dob" maxlength="128" required></td></tr>
+			    	<tr><td><text class="fontdec">Identity Lock</text></td>
+			    		<td><input type="text" title="identitylock" placeholder="your identitylock (unique to your identity)" style="width:100%" name="identitylock" id="identitylock" maxlength="64" placeholder="maximum 64 characters, no special characters" required></td></tr>
+					<tr><td><text class="fontdec">Security Question</text></td>
+			    		<td><input type="text" title="secquestion" style="width:100%" name="secquestion" id="secquestion" placeholder="your security (used in case of password misplace), 128 characters" maxlength="128" required></td></tr>
+			    	<tr><td><text class="fontdec">Security Answer</text></td>
+			    		<td><input type="password" title="secanswer" style="width:100%" name="secanswer" id="secanswer" placeholder="your security answer for above question, 128 characters" maxlength="128" required></td></tr>
+			    	<tr><td><text class="fontdec">Occupation</text></td>
+			    		<td><input type="text" title="occupation" style="width:100%" name="occupation" maxlength="128" placeholder="Profession like Student/Doctor/Engineer" required></td></tr>
+			    	<tr><td><text class="fontdec">Place</text></td>
+			    		<td><input type="text" title="place" style="width:100%" name="place" maxlength="128" placeholder="Current Reciding City Or State" required></td></tr>
+			    	<tr><td><text class="fontdec">Account Type</text></td>
+			    		<td><input type="text" style="width:100%" value="normal user account" readonly></td></tr>
+			    	</table><br />
 			    	<input type="submit" class="submitbox" name="submit" alt="search" value="Register">
 			    </form>
 			</section>';
