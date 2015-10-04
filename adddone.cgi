@@ -165,7 +165,9 @@ if ($login == 1) {
 		} else {
 			$share = 1;
 		}
-		$sth = $dbh->prepare("INSERT into datasubmission ( user,username,category,topic,discussion,source,tags,date,public,showme ) VALUES ( '$getuser','$getusername', '$category','$topic','$discussion','$sources','$tags',NOW(),'$share','1')");
+		my $ip = $ENV{REMOTE_ADDR};
+		my $info = $ENV{HTTP_USER_AGENT};
+		$sth = $dbh->prepare("INSERT into datasubmission ( user,username,category,topic,discussion,source,tags,date,public,showme,ip,http_agent ) VALUES ( '$getuser','$getusername', '$category','$topic','$discussion','$sources','$tags',NOW(),'$share','1','$ip','$info')");
 		$sth->execute();
 		$sth->finish();
 		$dbh->disconnect();

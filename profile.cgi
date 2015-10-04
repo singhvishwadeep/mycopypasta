@@ -110,7 +110,7 @@ if ($login == 0) {
 				
 				my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 				my $dbh = DBI->connect($dsn,"root","");
-				my $sth = $dbh->prepare("SELECT myusername,mydob,name,displaypic,registereddate,myemail,myprofession,myplace,activeaccount,admin FROM userdatabase where id='$profileid' and deleted=0");
+				my $sth = $dbh->prepare("SELECT myusername,mydob,name,displaypic,registereddate,myemail,myprofession,myplace,activeaccount,admin,registeredip,http_agent FROM userdatabase where id='$profileid' and deleted=0");
 				$sth->execute();
 				my $countres = $sth->rows;
 				if ($countres == 0) {
@@ -126,6 +126,8 @@ if ($login == 0) {
 					my $activeaccount = "";
 					my $admin = "";
 					my $mydob = "";
+					my $regip = "";
+					my $http = "";
 					while (my $ref = $sth->fetchrow_hashref()) {
 						$myusername = $ref->{'myusername'};
 						$name = $ref->{'name'};
@@ -137,6 +139,8 @@ if ($login == 0) {
 						$activeaccount = $ref->{'activeaccount'};
 						$admin = $ref->{'admin'};
 						$mydob = $ref->{'mydob'};
+						$regip = $ref->{'registeredip'};
+						$http = $ref->{'http_agent'};
 						break;
 					}
 					$sth->finish();
@@ -202,13 +206,21 @@ if ($login == 0) {
 				    			<tr><td><text class=\"fontdec\">Update Password</text></td>
 				    			<td><a href=\"updatepassword.cgi?id=$profileid\" class=\"button\">Click to update password</a></td></tr>";
 				    			
+				    			if ($session->param('logged_in_user_mycp') eq "admin") {
+				    				print "<tr><td><text class=\"fontdec\">Registered IP</text></td>
+					    			<td><a href=\"http://www.ip-tracker.org/locator/ip-lookup.php?ip=$regip\" target=\"_blank\">$regip</a></td></tr>";
+					    			
+					    			print "<tr><td><text class=\"fontdec\">Registered Agent</text></td>
+					    			<td><a href=\"http://www.ip-tracker.org/locator/ip-lookup.php?ip=$regip\" target=\"_blank\">$regip</a></td></tr>";
+				    			}
+				    			
 				    			if ($session->param('logged_in_user_mycp') eq "admin" && $myusername eq "admin") {
-					    			print "<tr><td><text class=\"fontdec\">Pending Account Activations</text></td>
-					    			<td><a href=\"activateaccount.cgi\" class=\"button\">Click for Pending Account Activations</a></td></tr>";
+					    			print "<tr><td><text class=\"fontdec\">Account Activations</text></td>
+					    			<td><a href=\"activateaccount.cgi\" class=\"button\">Click for Pending Activations</a></td></tr>";
 				    			}
 				    			if ($session->param('logged_in_user_mycp') eq "admin" && $myusername ne "admin") {
-					    			print "<tr><td><text class=\"fontdec\">Deactivate this account</text></td>
-						    			<td><a href=\"deactivateaccount.cgi?id=$profileid\" class=\"button\">Deactivate this account</a></td></tr>";
+					    			print "<tr><td><text class=\"fontdec\">Deactivate account</text></td>
+						    			<td><input type=\"text\" style=\"width:100%;\" value=\"$http\" readonly></td></tr>";
 				    			}
 				    			
 				    			print "</table></form>
@@ -247,6 +259,37 @@ if ($login == 0) {
 				    		</div>
 						</div>
 		    			</section>";
+		    			
+		    			
+		    			if ($session->param('logged_in_user_mycp') eq "admin" || $myusername eq $session->param('logged_in_user_mycp')) {
+			    			$sth = $dbh->prepare("SELECT ip,http_agent,date FROM login_ip_track where userid='$profileid' AND username='$myusername' LIMIT 20");
+							$sth->execute();
+							print "<section class=\"registerdata\">
+								<div class=\"loginbox\">Your Last 20 Login Sessions</div><form><table border=\"1\">";
+								print "<tr>
+			    						<td>S.No.</td>
+			    						<td>date</td>
+			    						<td>IP</td>
+			    						<td>HTTP_USER_AGENT</td>
+			    						</tr>";
+							my $i = 0;
+			    			while (my $ref = $sth->fetchrow_hashref()) {
+			    				$i++;
+			    				$val = trim($ref->{'tag'});
+								my $string = "tagview.cgi?showmytag=$val";
+		   						encode_entities($string);
+			    				print "<tr>
+			    						<td>$i</td>
+			    						<td>$ref->{'date'}</td>
+			    						<td><a href=\"http://www.ip-tracker.org/locator/ip-lookup.php?ip=$ref->{'ip'}\" target=\"_blank\">$ref->{'ip'}</a></td>
+			    						<td>$ref->{'http_agent'}</td>
+			    						</tr>";
+							}
+			    			print "</table></form>
+					    		</div>
+							</div>
+			    			</section>";
+		    			}
 				}
 				$sth->finish();
 				$dbh->disconnect();

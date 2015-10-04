@@ -78,6 +78,14 @@ if (param('User') and param('Password'))
 		my $msg = md5_hex('1');
 		$url = "loginerrcookie.cgi?msg=$msg";
 	} else {
+		my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+		my $dbh = DBI->connect($dsn,"root","");
+		my $ip = $ENV{REMOTE_ADDR};
+		my $info = $ENV{HTTP_USER_AGENT};
+		$sth = $dbh->prepare("INSERT into login_ip_track ( userid,username,ip,http_agent,date ) VALUES ( '$userid','$usr', '$ip','$info',NOW())");
+		$sth->execute();
+		$sth->finish();
+		$dbh->disconnect();
 		$session->param('logged_in_user_mycp',$usr);
 		$session->param('logged_in_userid_mycp',$userid);
 		$url = "loginsetcookie.cgi";

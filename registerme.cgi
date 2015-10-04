@@ -173,9 +173,10 @@ if ($login == 1) {
 			} elsif ($username ne "" && $password ne "" && $email ne "") {
 				# register the user
 				my $ip = $ENV{REMOTE_ADDR};
+				my $info = $ENV{HTTP_USER_AGENT};
 				my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 				my $dbh = DBI->connect($dsn,"root","");
-				$sth = $dbh->prepare("INSERT into userdatabase ( myusername,mydob,name,mypassword,registeredip,registereddate,myemail,myidentitylock,mysecurityquestion,mysecurityanswer,myprofession,myplace,activeaccount ) VALUES ( '$username','$dob', '$name','$password', '$ip',NOW(),'$email','$identitylock','$secquestion','$secanswer','$occupation','$place','1')");
+				$sth = $dbh->prepare("INSERT into userdatabase ( myusername,mydob,name,mypassword,registeredip,http_agent,registereddate,myemail,myidentitylock,mysecurityquestion,mysecurityanswer,myprofession,myplace,activeaccount ) VALUES ( '$username','$dob', '$name','$password', '$ip','$info',NOW(),'$email','$identitylock','$secquestion','$secanswer','$occupation','$place','1')");
 				$sth->execute();
 				$sth->finish();
 				

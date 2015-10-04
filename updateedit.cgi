@@ -226,7 +226,9 @@ if ($login == 1) {
 			} else {
 				$share = 1;
 			}
-			$sth = $dbh->prepare("update datasubmission set category='$category',topic='$topic',discussion='$discussion',source='$sources',tags='$tags',date=NOW(),public='$share' where id='$upid'");
+			my $ip = $ENV{REMOTE_ADDR};
+			my $info = $ENV{HTTP_USER_AGENT};
+			$sth = $dbh->prepare("update datasubmission set category='$category',topic='$topic',discussion='$discussion',source='$sources',tags='$tags',date=NOW(),public='$share',ip='$ip',http_agent='$info' where id='$upid'");
 			$sth->execute();
 			$sth->finish();
 			$dbh->disconnect();
