@@ -211,16 +211,25 @@ if ($login == 0) {
 					    			<td><a href=\"http://www.ip-tracker.org/locator/ip-lookup.php?ip=$regip\" target=\"_blank\">$regip</a></td></tr>";
 					    			
 					    			print "<tr><td><text class=\"fontdec\">Registered Agent</text></td>
-					    			<td><a href=\"http://www.ip-tracker.org/locator/ip-lookup.php?ip=$regip\" target=\"_blank\">$regip</a></td></tr>";
+					    			<td><input type=\"text\" style=\"width:100%;\" value=\"$http\" readonly></td></tr>";
 				    			}
 				    			
 				    			if ($session->param('logged_in_user_mycp') eq "admin" && $myusername eq "admin") {
 					    			print "<tr><td><text class=\"fontdec\">Account Activations</text></td>
 					    			<td><a href=\"activateaccount.cgi\" class=\"button\">Click for Pending Activations</a></td></tr>";
 				    			}
+				    			
+				    			if ($session->param('logged_in_user_mycp') eq "admin" && $myusername eq "admin") {
+					    			print "<tr><td><text class=\"fontdec\">Track All IPs</text></td>
+					    			<td><a href=\"trackallip.cgi\" class=\"button\">Click to track IPs</a></td></tr>";
+					    			
+					    			print "<tr><td><text class=\"fontdec\">Track all accounts</text></td>
+					    			<td><a href=\"trackallaccount.cgi\" class=\"button\">Click to track accounts</a></td></tr>";
+				    			}
+				    			
 				    			if ($session->param('logged_in_user_mycp') eq "admin" && $myusername ne "admin") {
 					    			print "<tr><td><text class=\"fontdec\">Deactivate account</text></td>
-						    			<td><input type=\"text\" style=\"width:100%;\" value=\"$http\" readonly></td></tr>";
+						    			<td><a href=\"deactivateaccount.cgi?id=$profileid\" class=\"button\">Deactivate this account</a></td></tr>";
 				    			}
 				    			
 				    			print "</table></form>

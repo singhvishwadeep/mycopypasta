@@ -19,8 +19,22 @@ my $login = 0;
 my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 my $dbh = DBI->connect($dsn,"root","");
 my $ip = $ENV{REMOTE_ADDR};
-my $sth = $dbh->prepare("INSERT into iphold ( ip,date ) VALUES ( '$ip',NOW())");
+my $info = $ENV{HTTP_USER_AGENT};
+my $sth = $dbh->prepare("select ip,count from index_ip_track where ip='$ip'");
 $sth->execute();
+$count = -1;
+while (my $ref = $sth->fetchrow_hashref()) {
+	$count = $ref->{'count'};
+	break;
+}
+if ($count != -1) {
+	$count++;
+	$sth = $dbh->prepare("update index_ip_track set count='$count',http_agent='$info',date=NOW() where ip='$ip'");
+	$sth->execute();
+} else {
+	$sth = $dbh->prepare("insert into index_ip_track ( ip,http_agent,date,count ) VALUES ( '$ip','$info', NOW(),'1')");
+	$sth->execute();
+}
 $sth->finish();
 $dbh->disconnect();
 

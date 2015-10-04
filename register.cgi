@@ -140,7 +140,7 @@ if ($login == 1) {
 				<form action="registerme.cgi" onsubmit="return myFunction()" METHOD="post" ENCTYPE="multipart/form-data">
 					<table>
 					<tr><td><text class="fontdec">Username</text></td>
-			    		<td><input type="text" title="username" placeholder="username (no special characters only underscore allowed, 64 characters)" pattern="^([A-Za-z]|[0-9]|_)+$" style="width:100%" name="username" maxlength="64" required></td></tr>
+			    		<td><input type="text" title="username" placeholder="only underscore and dot allowed with chars/num" pattern="^([A-Za-z]|[0-9]|_|\.)+$" style="width:100%" name="username" maxlength="64" required></td></tr>
 					<tr><td><text class="fontdec">Password</text></td>
 			    		<td><input type="password" title="password" placeholder="minimum 6 characters" style="width:100%" name="password" id="password" maxlength="64" pattern=".{6,}" required></td></tr>
 			    	<tr><td><text class="fontdec">Retype Password</text></td>
