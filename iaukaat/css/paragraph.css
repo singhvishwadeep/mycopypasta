@@ -1,0 +1,27 @@
+p {
+	font-size: 1em;
+	line-height: 1.25em;
+	margin: 0.625em 0;
+	text-align: justify;
+}
+p:first-line {
+	font-weight: 800;
+	font-variant: small-caps;
+}
+p:first-letter {
+	font-size: 8em;
+	line-height: 1em;
+	font-weight: 400;
+	float: left;
+	margin: 0 0 0 -0.1em;
+}
+p + p:first-letter {
+	font-size: 1em;
+	line-height: 1.25em;
+	float: none;
+	margin: 0;
+}
+p + p:first-line {
+	font-weight: 400;
+	font-variant: normal;
+}
