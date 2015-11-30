@@ -32,27 +32,27 @@ if($ssid eq "") {
 	}
 }
 
-if ($login == 0) {
-	my $url="login.cgi";
-	my $t=0; # time until redirect activates
-	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
-}
-
 sub  trim { 
 	my $s = shift;
 	$s =~ s/^\s+|\s+$//g;
 	return $s;
 }
-if ($login == 1) {
+
+if ($login == 0) {
+	my $url="login.cgi";
+	my $t=0; # time until redirect activates
+	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
+} else{
 	my $getuser = $session->param('logged_in_userid_mycp');
 	my $getusername = $session->param('logged_in_user_mycp');
 	
 	my $amount=param('amount');
 	my $ttype=param('ttype');
-	my $account=param('account');
+	my $account=param('selectaccount');
 	my $selectcategory=param('selectcategory');
-	my $New_Category=param('New_Category');
+	my $New_Category=param('new_category');
 	my $tags=param('tags');
+	my $comment=param('comment');
 	my $category = "";
 	
 	$amount = trim($amount);
@@ -61,6 +61,7 @@ if ($login == 1) {
 	$selectcategory = trim($selectcategory);
 	$New_Category = trim($New_Category);
 	$tags = trim($tags);
+	$comment = trim($comment);
 	
 	$amount =~ s{\'}{\\'}g;
 	$ttype =~ s{\'}{\\'}g;
@@ -68,9 +69,9 @@ if ($login == 1) {
 	$selectcategory =~ s{\'}{\\'}g;
 	$New_Category =~ s{\'}{\\'}g;
 	$tags =~ s{\'}{\\'}g;
+	$comment =~ s{\'}{\\'}g;
 	
-	
-	if ($amount ne "") {
+	if ($amount ne "" && $account ne "") {
 		
 		my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 		my $dbh = DBI->connect($dsn,"root","");
@@ -80,20 +81,24 @@ if ($login == 1) {
 			if ($new_category ne "") {
 				$category = $new_category;
 			} else {
-				$category = "pocket";
+				$category = "pocket purse";
 			}
 		} else {
 			$category = $selectcategory;
 		}
 		
-		my $sth = $dbh->prepare("SELECT id,category,count,userid FROM categoryinfo where userid='$getuser' AND category='$category'");
+		if ($category eq "") {
+			$category = "pocket purse";
+		}
+		
+		my $sth = $dbh->prepare("SELECT id,category,category_count,userid FROM trcategoryinfo where userid='$getuser' AND category='$category'");
 		$sth->execute();
 		my $catcount = 0;
 		my $catid = -1;
 		while (my $ref = $sth->fetchrow_hashref()) {
 			if ($ref->{'category'} ne "") {
 				$catid = $ref->{'id'};
-				$catcount = $ref->{'count'};
+				$catcount = $ref->{'category_count'};
 				break;
 			}
 		}
@@ -101,10 +106,10 @@ if ($login == 1) {
 		if ($catid != -1) {
 			# prev category exists for a user
 			$catcount++;
-			$sth = $dbh->prepare("update categoryinfo set count='$catcount' where id='$catid'");
+			$sth = $dbh->prepare("update trcategoryinfo set category_count='$catcount' where id='$catid'");
 		} else {
 			# new category found for a user
-			$sth = $dbh->prepare("INSERT into categoryinfo ( category,count,userid ) VALUES ( '$category','1', '$getuser')");
+			$sth = $dbh->prepare("INSERT into trcategoryinfo ( category,category_count,userid ) VALUES ( '$category','1', '$getuser')");
 		}
 		$sth->execute();
 		
@@ -125,13 +130,13 @@ if ($login == 1) {
 				push @parsedtags, $val;
 				$tagcount = 0;
 				$tagid = -1;
-				$sth = $dbh->prepare("SELECT id,tag,tagcount,userid FROM taginfo where userid='$getuser' AND tag='$val'");
+				$sth = $dbh->prepare("SELECT id,tag,tag_count,userid FROM trtaginfo where userid='$getuser' AND tag='$val'");
 				$sth->execute();
 	
 				while (my $ref = $sth->fetchrow_hashref()) {
 					if ($ref->{'tag'} ne "") {
 						$tagid = $ref->{'id'};
-						$tagcount = $ref->{'tagcount'};
+						$tagcount = $ref->{'tag_count'};
 						break;
 					}
 				}
@@ -139,29 +144,63 @@ if ($login == 1) {
 				if ($tagid != -1) {
 					# prev tag exists for a user
 					$tagcount++;
-					$sth = $dbh->prepare("update taginfo set tagcount='$tagcount' where id='$tagid'\n");
+					$sth = $dbh->prepare("update trtaginfo set tag_count='$tagcount' where id='$tagid'\n");
 				} else {
 					# new category found for a user
-					$sth = $dbh->prepare("INSERT into taginfo ( tag,tagcount,userid ) VALUES ( '$val','1', '$getuser')");
+					$sth = $dbh->prepare("INSERT into trtaginfo ( tag,tag_count,userid ) VALUES ( '$val','1', '$getuser')");
 				}
 				$sth->execute();
 			}
 		}
 		$tags = join ( ',', @parsedtags );
-		if ($share eq "private") {
-			$share = 0;
-		} else {
-			$share = 1;
+		
+		$sth = $dbh->prepare("SELECT type,balance,id FROM traccountinfo where userid='$getuser' AND account='$account'");
+		$sth->execute();
+		my $trbalance = 0;
+		my $trid = -1;
+		my $trtype = "";
+		while (my $ref = $sth->fetchrow_hashref()) {
+			$trid = $ref->{'id'};
+			$trtype = $ref->{'type'};
+			$trbalance = $ref->{'balance'};
+			break;
 		}
-		my $ip = $ENV{REMOTE_ADDR};
-		my $info = $ENV{HTTP_USER_AGENT};
-		$sth = $dbh->prepare("INSERT into datasubmission ( user,username,category,topic,discussion,source,tags,date,public,showme,ip,http_agent ) VALUES ( '$getuser','$getusername', '$category','$topic','$discussion','$sources','$tags',NOW(),'$share','1','$ip','$info')");
-		#$sth->execute();
-		$sth->finish();
-		$dbh->disconnect();
-		$url = "view.cgi";
+		my $prev_amount = $trbalance;
+		my $new_amount = $trbalance;
+		if ($trid != -1) {
+			my $ip = $ENV{REMOTE_ADDR};
+			my $info = $ENV{HTTP_USER_AGENT};
+			
+			if ($trtype eq "credit") {
+				# going in credit card
+				if ($ttype eq "Expence") {
+					# spent from credit card
+					$new_amount = $new_amount + $amount;
+				} else {
+					#  added to credit card
+					$new_amount = $new_amount - $amount;
+				}
+			} else {
+				if ($ttype eq "Expence") {
+					# spent from debit
+					$new_amount = $new_amount - $amount;
+				} else {
+					#  added to debit
+					$new_amount = $new_amount + $amount;
+				}
+			}
+			$sth = $dbh->prepare("update traccountinfo set balance='$new_amount' where userid='$getuser' AND account='$account'");
+			$sth->execute();
+			$sth = $dbh->prepare("INSERT into transactioninfo ( date,time,userid,amount,account,prev_value,new_value,type,category,tags,ip,http_agent, comment ) VALUES ( CURDATE(), CURTIME(), '$getuser','$amount', '$account','$prev_amount', '$new_amount', '$ttype','$category','$tags','$ip','$info', '$comment')");
+			$sth->execute();
+			$sth->finish();
+			$dbh->disconnect();
+			$url = "view.cgi";
+		} else {
+			$url = "addtransaction.cgi";
+		}
 	} else {
-		$url = "addpasta.cgi";
+		$url = "addtransaction.cgi";
 	}
 	
 	my $t=1; # time until redirect activates

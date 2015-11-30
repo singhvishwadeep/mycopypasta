@@ -60,7 +60,7 @@ if ($login == 0) {
 	
 	print '<html lang="en-US">
 		<head>
-			<title>My Copy-Pasta</title>
+			<title>My iAukaat</title>
 			<link rel="shortcut icon" href="images/newlogo.ico">
 			<link rel="stylesheet" type="text/css" href="css/style.css">
 			<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
@@ -92,18 +92,17 @@ if ($login == 0) {
 				        if ($login) {
 					        print '<li><a href="addtransaction.cgi">Add Transaction</a></li>';
 				        }
-				        print '<li><a href="view.cgi">iAukaat</a></li>
-				        <li><a href="tutorial.cgi">Tutorials</a></li>
-				        <li><a href="search.cgi">Search Transaction</a></li>
-				        <li><a href="contact.cgi">Contact Us</a></li>';
+				        print '<li><a href="view.cgi">Show iAukaat</a></li>
+				        <li><a href="tutorial.cgi">iAukaat Tutorials</a></li>';
 				        if ($login) {
 				        	my $getuser = $session->param('logged_in_userid_mycp');
+					        print '<li><a href="search.cgi">Search Transactions</a></li>';
 					        print '<li><a href="logout.cgi">Logout</a></li>';
-					        print "<li><a href=\"profile.cgi?id=$getuser\">Profile</a></li>";
+					        print "<li><a href=\"profile.cgi?id=$getuser\">My Profile</a></li>";
 				        } else {
 				        	print '<li><a href="login.cgi">Login</a></li>';
 				        }
-				      print '</ul>
+				      print '<li><a href="contact.cgi">Contact iAukaat Team</a></li></ul>
 				    </div>
 					</td>
 				</tr>';
@@ -236,33 +235,33 @@ if ($login == 0) {
 				    		</div>
 						</div>
 		    			</section>";
-		    			$sth = $dbh->prepare("SELECT category,count FROM categoryinfo where userid='$profileid'");
+		    			$sth = $dbh->prepare("SELECT category,category_count FROM trcategoryinfo where userid='$profileid'");
 						$sth->execute();
 						print "<section class=\"registerdata\">
-							<div class=\"loginbox\">Your total Category Inputs</div><form><table>";
+							<div class=\"loginbox\">Your total Category Transactions</div><form><table>";
 							
 		    			while (my $ref = $sth->fetchrow_hashref()) {
 		    				my $string = "categoryview.cgi?showmycategory=$ref->{'category'}";
 							encode_entities($string);
 		    				print "<tr><td><a href =\"$string\"><text class=\"fontdec\">$ref->{'category'}</text></a></td>
-				    			<td><input type=\"text\" style=\"width:100%\" value=\"$ref->{'count'}\" readonly></td></tr>";
+				    			<td><input type=\"text\" style=\"width:100%\" value=\"$ref->{'category_count'}\" readonly></td></tr>";
 						}
 		    			print "</table></form>
 				    		</div>
 						</div>
 		    			</section>";
 		    			
-		    			$sth = $dbh->prepare("SELECT tag,tagcount FROM taginfo where userid='$profileid'");
+		    			$sth = $dbh->prepare("SELECT tag,tag_count FROM trtaginfo where userid='$profileid'");
 						$sth->execute();
 						print "<section class=\"registerdata\">
-							<div class=\"loginbox\">Your total Tag Inputs</div><form><table>";
+							<div class=\"loginbox\">Your total Tag Transactions</div><form><table>";
 							
 		    			while (my $ref = $sth->fetchrow_hashref()) {
 		    				$val = trim($ref->{'tag'});
 							my $string = "tagview.cgi?showmytag=$val";
 	   						encode_entities($string);
 		    				print "<tr><td><a href =\"$string\"><text class=\"fontdec\">$ref->{'tag'}</text></a></td>
-				    			<td><input type=\"text\" style=\"width:100%\" value=\"$ref->{'tagcount'}\" readonly></td></tr>";
+				    			<td><input type=\"text\" style=\"width:100%\" value=\"$ref->{'tag_count'}\" readonly></td></tr>";
 						}
 		    			print "</table></form>
 				    		</div>

@@ -2,10 +2,10 @@
     width: 50%;
     height: auto;
     overflow: hidden;
-    background: -webkit-linear-gradient(skyblue, white); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(skyblue, white); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(skyblue, white); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(skyblue, white); /* Standard syntax (must be last) */
+    background: -webkit-linear-gradient(#D94E67, white); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#D94E67, white); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#D94E67, white); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#D94E67, white); /* Standard syntax (must be last) */
     border-radius: 6px;
     margin: 50px auto;
     box-shadow: 0px 0px 50px rgba(0,0,0,.8);
@@ -25,7 +25,7 @@
     padding-left:10%;
     text-align: left;
     font-weight: bold;
-    background: skyblue;
+    background: #D94E67;
     margin-bottom: 30px;
     border-top-right-radius: 6px;
     border-top-left-radius: 6px;
@@ -81,8 +81,8 @@
     display: block;
     padding: 1px;
     border-radius: 6px;
-    border: #4eb2a8 1px solid;
-    background: #369;
+    border: #D94E67 1px solid;
+    background: #D94E67;
     text-align: center;
     text-decoration: none;
     font-size: 12px;
@@ -101,7 +101,7 @@ select {
 }
 
 select:hover { 
-    background-color: #369;
+    background-color: #D94E67;
     border: #000000 1px solid;
     color:#FFFFFF;
     cursor:pointer;

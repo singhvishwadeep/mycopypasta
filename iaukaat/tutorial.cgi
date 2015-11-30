@@ -32,7 +32,7 @@ if($ssid eq "") {
 }
 print '<html lang="en-US">
 	<head>
-		<title>iAukaat</title>
+		<title>My iAukaat</title>
 		<link rel="shortcut icon" href="images/newlogo.ico">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
@@ -63,18 +63,17 @@ print '<html lang="en-US">
 				        if ($login) {
 					        print '<li><a href="addtransaction.cgi">Add Transaction</a></li>';
 				        }
-				        print '<li><a href="view.cgi">iAukaat</a></li>
-				        <li><a href="tutorial.cgi">Tutorials</a></li>
-				        <li><a href="search.cgi">Search Transaction</a></li>
-				        <li><a href="contact.cgi">Contact Us</a></li>';
+				        print '<li><a href="view.cgi">Show iAukaat</a></li>
+				        <li><a href="tutorial.cgi">iAukaat Tutorials</a></li>';
 				        if ($login) {
 				        	my $getuser = $session->param('logged_in_userid_mycp');
+					        print '<li><a href="search.cgi">Search Transactions</a></li>';
 					        print '<li><a href="logout.cgi">Logout</a></li>';
-					        print "<li><a href=\"profile.cgi?id=$getuser\">Profile</a></li>";
+					        print "<li><a href=\"profile.cgi?id=$getuser\">My Profile</a></li>";
 				        } else {
 				        	print '<li><a href="login.cgi">Login</a></li>';
 				        }
-				      print '</ul>
+				      print '<li><a href="contact.cgi">Contact iAukaat Team</a></li></ul>
 				    </div>
 				</td>
 			</tr>

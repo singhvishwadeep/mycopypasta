@@ -60,7 +60,7 @@ if($ssid eq "") {
 
 print '<html lang="en-US">
 	<head>
-		<title>iAukaat</title>
+		<title>My iAukaat</title>
 		<link rel="shortcut icon" href="images/newlogo.ico">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
@@ -91,18 +91,17 @@ print '<html lang="en-US">
 				        if ($login) {
 					        print '<li><a href="addtransaction.cgi">Add Transaction</a></li>';
 				        }
-				        print '<li><a href="view.cgi">iAukaat</a></li>
-				        <li><a href="tutorial.cgi">Tutorials</a></li>
-				        <li><a href="search.cgi">Search Transaction</a></li>
-				        <li><a href="contact.cgi">Contact Us</a></li>';
+				        print '<li><a href="view.cgi">Show iAukaat</a></li>
+				        <li><a href="tutorial.cgi">iAukaat Tutorials</a></li>';
 				        if ($login) {
 				        	my $getuser = $session->param('logged_in_userid_mycp');
+					        print '<li><a href="search.cgi">Search Transactions</a></li>';
 					        print '<li><a href="logout.cgi">Logout</a></li>';
-					        print "<li><a href=\"profile.cgi?id=$getuser\">Profile</a></li>";
+					        print "<li><a href=\"profile.cgi?id=$getuser\">My Profile</a></li>";
 				        } else {
 				        	print '<li><a href="login.cgi">Login</a></li>';
 				        }
-				      print '</ul>
+				      print '<li><a href="contact.cgi">Contact iAukaat Team</a></li></ul>
 				    </div>
 				</td>
 			</tr>
@@ -113,31 +112,31 @@ print '<html lang="en-US">
 				manage your money the right way is an important step toward taking control of your life.
 					Understand where your money is coming from, where it\'s going to, and how to make sure that the way you manage 
 					your money falls in line with the values that matter most to you.</p>
-					<p>As soon as you start spending your own money, itâ€™s time to start tracking your spending so that you can create 
+					<p>As soon as you start spending your own money, it’s time to start tracking your spending so that you can create 
 					and follow a personal budget. Tracking your spending, while sometimes tedious, is the best way to find out exactly 
 					where your money is going.
 					The simplest way to track your spending, especially your cash, is the low-tech way, with a notebook and a pen. 
-					By carrying around the notebook with you, you can track exactly where every dollar is goingâ€“from a small coffee on 
-					your way to work to a spending splurge at the mall. If youâ€™d prefer, on a daily or weekly basis, you can transfer 
+					By carrying around the notebook with you, you can track exactly where every dollar is going–from a small coffee on 
+					your way to work to a spending splurge at the mall. If you’d prefer, on a daily or weekly basis, you can transfer 
 					your handwritten notes to a computer spreadsheet.
-					Once you have collected information for about a month, youâ€™ll have a good baseline of information to use to create 
-					your personal budget. Some major categories that youâ€™ll want to include are housing, utilities, insurance, food 
-					(groceries and dining out), gasoline, clothing, entertainment, and â€œother". Using a spreadsheet program (such as Excel),
-					online service, or other personal finance program, add up the expenses that youâ€™ve been tracking, and then calculate 
-					what youâ€™d like to budget for each category. Keep in mind that youâ€™ll need to budget for some items, like gifts and 
-					automobile repairs, which will be necessary but wonâ€™t occur every month. You can either create a budget for each 
+					Once you have collected information for about a month, you’ll have a good baseline of information to use to create 
+					your personal budget. Some major categories that you’ll want to include are housing, utilities, insurance, food 
+					(groceries and dining out), gasoline, clothing, entertainment, and “other". Using a spreadsheet program (such as Excel),
+					online service, or other personal finance program, add up the expenses that you’ve been tracking, and then calculate 
+					what you’d like to budget for each category. Keep in mind that you’ll need to budget for some items, like gifts and 
+					automobile repairs, which will be necessary but won’t occur every month. You can either create a budget for each 
 					individual month, with variances for irregular expenses (e.g., heating expenses which will be higher in winter months, 
 					or car repairs and gifts), or a standard monthly budget where you include an average amount for expenses such as car 
 					repairs, heating, and gifts.
 					Your budget should also contain some personal savings amounts for retirement savings, college savings, an emergency fund, 
-					long-term savings, and any other savings goals you may have. Donâ€™t wait until the end of the month to see whatâ€™s leftâ€“budget 
+					long-term savings, and any other savings goals you may have. Don’t wait until the end of the month to see what’s left–budget 
 					for your savings first.
 					Creating the budget is a good first step, but the most important thing is to follow the budget. Make time weekly or 
 					monthly to track your spending, and start to see if you are actually keeping to your budget. Using a personal finance
 					program or an online service is probably the easiest way to do this on an ongoing basis, but make sure you continue 
 					to track where your cash is going. You could also use this simple Budget Worksheet. You may be surprised to find out 
 					how the frequent small amounts you spend actually add up to big money.
-					After tracking your personal budget, you may notice some areas where youâ€™ll have to make changes. Donâ€™t just increase 
+					After tracking your personal budget, you may notice some areas where you’ll have to make changes. Don’t just increase 
 					your budget without considering alternatives. While you may have no choice, if prices or expenses go up, shop for 
 					better deals before giving in to the extra expenses.</p>
 				<p>We are also working on some other projects like pathway traversing tool in C and C++ and Note Copy Paste Tool &quot;My Copy-Pasta&quot;. 

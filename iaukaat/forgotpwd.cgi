@@ -33,7 +33,7 @@ if($ssid eq "") {
 
 print '<html lang="en-US">
 	<head>
-		<title>iAukaat</title>
+		<title>My iAukaat</title>
 		<link rel="shortcut icon" href="images/newlogo.ico">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
@@ -64,23 +64,22 @@ print '<html lang="en-US">
 				        if ($login) {
 					        print '<li><a href="addtransaction.cgi">Add Transaction</a></li>';
 				        }
-				        print '<li><a href="view.cgi">iAukaat</a></li>
-				        <li><a href="tutorial.cgi">Tutorials</a></li>
-				        <li><a href="search.cgi">Search Transaction</a></li>
-				        <li><a href="contact.cgi">Contact Us</a></li>';
+				        print '<li><a href="view.cgi">Show iAukaat</a></li>
+				        <li><a href="tutorial.cgi">iAukaat Tutorials</a></li>';
 				        if ($login) {
 				        	my $getuser = $session->param('logged_in_userid_mycp');
+					        print '<li><a href="search.cgi">Search Transactions</a></li>';
 					        print '<li><a href="logout.cgi">Logout</a></li>';
-					        print "<li><a href=\"profile.cgi?id=$getuser\">Profile</a></li>";
+					        print "<li><a href=\"profile.cgi?id=$getuser\">My Profile</a></li>";
 				        } else {
 				        	print '<li><a href="login.cgi">Login</a></li>';
 				        }
-				      print '</ul>
+				      print '<li><a href="contact.cgi">Contact iAukaat Team</a></li></ul>
 				    </div>
 				</td>
 			</tr>';
 				
-				print "<tr><td><font color=\"red\">For forgot password please contact admin <a href=\"mailto:myblueskylabs@gmail.com ?Subject=Reg:Forgot%20Password\" target=\"_top\">(Send Mail to myblueskylabs@gmail.com)</a> for the issue.</font></td></tr>";
+				print "<tr><td><br><font color=\"black\">For forgot password please contact admin <a href=\"mailto:myblueskylabs@gmail.com ?Subject=Reg:Forgot%20Password\" target=\"_top\">(Send Mail to myblueskylabs@gmail.com)</a> for the issue.</font><br><br><br><br></td></tr>";
 				print '</table>
 	</body>
 	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">&copy;2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs (myblueskylabs@gmail.com)</a>, powered by Vishwadeep Singh</text></div>

@@ -112,7 +112,7 @@ if ($login == 1) {
 	
 	print '<html lang="en-US">
 		<head>
-			<title>iAukaat</title>
+			<title>My iAukaat</title>
 			<link rel="shortcut icon" href="images/newlogo.ico">
 			<link rel="stylesheet" type="text/css" href="css/style.css">
 			<link rel="stylesheet" type="text/css" href="css/viewstyle.css">
