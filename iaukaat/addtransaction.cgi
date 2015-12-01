@@ -86,7 +86,7 @@ if ($login) {
 					        <li><a href="tutorial.cgi">iAukaat Tutorials</a></li>';
 					        if ($login) {
 					        	my $getuser = $session->param('logged_in_userid_mycp');
-						        print '<li><a href="search.cgi">Search Transactions</a></li>';
+						        print '<li><a href="addaccount.cgi">Add New Account</a></li>';
 						        print '<li><a href="logout.cgi">Logout</a></li>';
 						        print "<li><a href=\"profile.cgi?id=$getuser\">My Profile</a></li>";
 					        } else {

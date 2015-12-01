@@ -58,18 +58,53 @@ if ($login) {
 		my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
 		my $dbh = DBI->connect($dsn,"root","");
 		my $getuser = $session->param('logged_in_userid_mycp');
-		my $sth = $dbh->prepare("select new_value,date from transactioninfo where tid IN (select max(tid) from transactioninfo where userid='$getuser' GROUP by date,account)");
+		my $sth = $dbh->prepare("select distinct(account),type from traccountinfo where userid='$getuser'");
 		$sth->execute();
-		my %data;
-		my @refarr;
+		my %allaccounts;
 		while (my $ref = $sth->fetchrow_hashref()) {
-			if( exists($data{$ref->{'date'}}) ){
-				$data{$ref->{'date'}} =  $data{$ref->{'date'}} + $ref->{'new_value'};
-			} else{
-				push(@refarr, $ref->{'date'});
-				$data{$ref->{'date'}} = $ref->{'new_value'};
+			if ($ref->{'type'} eq "credit") {
+				$allaccounts{$ref->{'account'}} = -1;
+			} else {
+				$allaccounts{$ref->{'account'}} = 0;
 			}
-		}		
+		}
+		
+		$sth = $dbh->prepare("select amount, account,new_value,date, prev_value,type from transactioninfo where userid='$getuser' ORDER BY tid ASC");
+		$sth->execute();
+		my %dataexp;
+		my %datainc;
+		my %alldata;
+		my %refarr;
+		my @listarrdate;
+		while (my $ref = $sth->fetchrow_hashref()) {
+			if ($ref->{'type'} eq "Expence") {
+				if( exists($dataexp{$ref->{'date'}}) ){
+					$dataexp{$ref->{'date'}} =  $dataexp{$ref->{'date'}} + $ref->{'amount'};
+				} else{
+					$dataexp{$ref->{'date'}} = $ref->{'amount'};
+				}
+				if( exists($alldata{$ref{'date'},$ref{'account'}}) ) {
+					$alldata{$ref{'date'},$ref{'account'}} = $alldata{$ref{'date'},$ref{'account'}} - $ref->{'amount'};
+				} else {
+					$alldata{$ref{'date'},$ref{'account'}} = 0 - $ref->{'amount'};
+				}
+			} elsif ($ref->{'type'} eq "Income") {
+				if( exists($datainc{$ref->{'date'}}) ){
+					$datainc{$ref->{'date'}} =  $datainc{$ref->{'date'}} + $ref->{'amount'};
+				} else{
+					$datainc{$ref->{'date'}} = $ref->{'amount'};
+				}
+				if( exists($alldata{$ref{'date'},$ref{'account'}}) ) {
+					$alldata{$ref{'date'},$ref{'account'}} = $alldata{$ref{'date'},$ref{'account'}} + $ref->{'amount'};
+				} else {
+					$alldata{$ref{'date'},$ref{'account'}} = $ref->{'amount'};
+				}
+			}
+			if( !exists($refarr{$ref->{'date'}}) ){
+				$refarr{$ref->{'date'}} = 1;
+				push(@listarrdate, $ref->{'date'});
+			}
+		}
 		
 		print "<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\"></script>\n";
 		print "<script type=\"text/javascript\">\n";
@@ -79,20 +114,37 @@ if ($login) {
 
 		print "var data = new google.visualization.DataTable();\n";
 		print "data.addColumn('number', 'Days');\n";
-		print "data.addColumn('number', 'Balance');\n";
+		print "data.addColumn('number', 'Expence');\n";
+		print "data.addColumn('number', 'Income');\n";
+		print "data.addColumn('number', 'Total');\n";
 
 		print "data.addRows([\n";
 		my $i = 0;
-		foreach my $i (0 .. $#refarr) {
-			if ($i != $#refarr) {
-				print "[$i,$data{$refarr[$i]}],\n";
-			} else {
-				print "[$i,$data{$refarr[$i]}]\n";
+		my $allshow = 0;
+		my $finall = 0.0;
+		foreach my $i1 (0 .. $#listarrdate) {
+			my $ddate = $listarrdate[$i1];
+			my $exp = 0.0;
+			if( exists($dataexp{$ddate}) ){
+				$exp = $dataexp{$ddate};
 			}
+			my $inc = 0.0;
+			if( exists($datainc{$ddate}) ){
+				$inc = $datainc{$ddate};
+			}
+			my $tot = $allshow+$inc-$exp;
+			$allshow = $tot;
+			print "[$i,$exp,$inc,$tot],\n";
+			$finall = $tot;
+			$i++;
 		}
 		print "]);\n";
-		
+		my $getusern = $session->param('logged_in_user_mycp');
 		print "var options = {\n";
+		print "chart: {\n";
+        print "  title: 'iAukaat Balance for $getusern',\n";
+        print "  subtitle: 'in Indian Rupees'\n";
+        print " },\n";
 		print "height: 500\n";
 		print "};\n";
 
@@ -122,7 +174,7 @@ if ($login) {
 					        <li><a href="tutorial.cgi">iAukaat Tutorials</a></li>';
 					        if ($login) {
 					        	my $getuser = $session->param('logged_in_userid_mycp');
-						        print '<li><a href="search.cgi">Search Transactions</a></li>';
+						        print '<li><a href="addaccount.cgi">Add New Account</a></li>';
 						        print '<li><a href="logout.cgi">Logout</a></li>';
 						        print "<li><a href=\"profile.cgi?id=$getuser\">My Profile</a></li>";
 					        } else {
@@ -131,27 +183,70 @@ if ($login) {
 					      print '<li><a href="contact.cgi">Contact iAukaat Team</a></li></ul>
 					    </div>
 					</td>
-				</tr>
-				<tr><td><div id="linechart_material"></div></td></tr>
-			</table>';
+				</tr>';
+				
+							print "<tr><td><font style=\"font-family: Georgia;font-size: 16px;font-weight: bold;color: #600;\">Current Accounts</font></td></tr>";
+			
+			print '<tr><td><table align="center" width="100%">';
+			
+			$sth = $dbh->prepare("select account,type,balance from traccountinfo where userid='$getuser'");
+			$sth->execute();
+			my %allaccounts1;
+			my %allaccountstype;
+			while (my $ref = $sth->fetchrow_hashref()) {
+				$allaccounts1{$ref->{'account'}} = 0;
+				$allaccountstype{$ref->{'account'}} = $ref->{'type'};
+			}
+			my $getuser = $session->param('logged_in_userid_mycp');
+			$sth = $dbh->prepare("select amount,account,type from transactioninfo where userid='$getuser'");
+			$sth->execute();
+			while (my $ref = $sth->fetchrow_hashref()) {
+				if ($ref->{'type'} eq "Expence") {
+					$allaccounts1{$ref->{'account'}} = $allaccounts1{$ref->{'account'}} - $ref->{'amount'};
+				} else {
+					$allaccounts1{$ref->{'account'}} = $allaccounts1{$ref->{'account'}} + $ref->{'amount'};
+				}
+			}
+			
+			print "<tr style=\"background-color: #D94E67;color: white;\"><th>S.No.</th><th>Account</th><th>Type</th><th>Balance</th></tr>";
+			my $i = 1;
+			my $tot = 0;
+			foreach my $acc (keys %allaccounts1) {
+				my $line = "";
+				if ($i%2 == 0) {
+					$line = "background-color: #ff5050;color: white;";
+				} else {
+					$line = "background-color: #999966;color: white;";
+				}
+				$tot = $tot + $allaccounts1{$acc};
+				print "<tr align=\"center\" style=\"$line\"><td>$i</td><td><a href=\"byaccount.cgi?id=$acc\" target=\"_blank\">$acc</a></td><td>$allaccountstype{$acc}</td><td>$allaccounts1{$acc}</td></tr>";
+				$i++;
+			}
+			print "<tr align=\"center\" style=\"background-color: #000000;color: white;\"><td></td><td></td><td>Total</td><td>$tot</td></tr>";
+			print '</table></td></tr><br><br>';
+				
+				print '<tr><td><div id="linechart_material"></div></td></tr>
+			</table><br><br>';
 			
 		$sth = $dbh->prepare("select tid,date,time, amount, account, prev_value, new_value, type, category, tags,comment from transactioninfo where userid='$getuser' ORDER BY tid DESC");
 		$sth->execute();
 		
-		print "<table align=\"center\" width=\"65%\"><tr style=\"background-color: #D94E67;color: white;\"><th>Tr ID</th><th>Time</th><th>Account</th><th>Amount</th><th>Balance</th><th>Type</th><th>Comment</th><th>Category</th><th>Tags</th></tr>";
-		
-		my $io = 0;
+		print "<table align=\"center\" width=\"65%\"><tr style=\"background-color: #D94E67;color: white;\"><th>Transaction ID</th><th>Time</th><th>Account</th><th>Amount</th><th>Type</th><th>Comment</th><th>Category</th><th>Tags</th></tr>";
 		
 		while (my $ref = $sth->fetchrow_hashref()) {
 			my $line = "";
-			if ($io == 0) {
-				$io = 1;
-				$line = "background-color: #ff5050;color: white;";
+			if ($ref->{'type'} eq "Income") {
+				$line = "background-color: green;color: black;";
 			} else {
-				$io = 0;
-				$line = "background-color: #999966;color: white;";
+				$line = "background-color: #ff5050;color: black;";
 			}
-			print "<tr style=\"$line\"><td>$ref->{'tid'}</td><td>$ref->{'date'} $ref->{'time'}</td><td><a href=\"byaccount.cgi?id=$ref->{'account'}\" target=\"_blank\">$ref->{'account'}</a></td><td>$ref->{'amount'}</td><td>$ref->{'new_value'}</td><td><a href=\"bytype.cgi?id=$ref->{'type'}\" target=\"_blank\">$ref->{'type'}</a></td><td>$ref->{'comment'}</td><td><a href=\"bycategory.cgi?id=$ref->{'category'}\" target=\"_blank\">$ref->{'category'}</a></td><td><a href=\"bytags.cgi?id=$ref->{'tags'}\" target=\"_blank\">$ref->{'tags'}</a></td></tr>";
+			print "<tr style=\"$line\"><td>$ref->{'tid'}</td><td>$ref->{'date'} $ref->{'time'}</td><td><a href=\"byaccount.cgi?id=$ref->{'account'}\" target=\"_blank\">$ref->{'account'}</a></td><td>$ref->{'amount'}</td><td><a href=\"bytype.cgi?id=$ref->{'type'}\" target=\"_blank\">$ref->{'type'}</a></td><td>$ref->{'comment'}</td><td><a href=\"bycategory.cgi?id=$ref->{'category'}\" target=\"_blank\">$ref->{'category'}</a></td>";
+			print "<td>";
+			my @values = split(',', $ref->{'tags'});
+			foreach my $val (@values) {
+				print "<a href=\"bytags.cgi?id=$val\" target=\"_blank\">$val</a>\n";
+			}
+			print "</td></tr>";
 		}
 			
 		print '</table></body>

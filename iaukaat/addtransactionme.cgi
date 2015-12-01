@@ -191,7 +191,6 @@ if ($login == 0) {
 			}
 			$sth = $dbh->prepare("update traccountinfo set balance='$new_amount' where userid='$getuser' AND account='$account'");
 			$sth->execute();
-			print "INSERT into transactioninfo ( date,time,userid,amount,account,prev_value,new_value,type,category,tags,ip,http_agent, comment ) VALUES ( CURDATE(), CURTIME(), '$getuser','$amount', '$account','$prev_amount', '$new_amount', '$ttype','$category','$tags','$ip','$info', '$comment')";
 			$sth = $dbh->prepare("INSERT into transactioninfo ( date,time,userid,amount,account,prev_value,new_value,type,category,tags,ip,http_agent, comment ) VALUES ( CURDATE(), CURTIME(), '$getuser','$amount', '$account','$prev_amount', '$new_amount', '$ttype','$category','$tags','$ip','$info', '$comment')");
 			$sth->execute();
 			$sth->finish();
@@ -204,7 +203,7 @@ if ($login == 0) {
 		$url = "addtransaction.cgi";
 	}
 	
-	my $t=1; # time until redirect activates
+	my $t=0; # time until redirect activates
 	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 }
 1;
