@@ -254,6 +254,10 @@ if ($login) {
 		<hr width="65%">
 		<div style="text-align:center"><div class="fb-follow" data-href="https://www.facebook.com/vsdpsingh" data-width="250" data-height="250" data-layout="standard" data-show-faces="true"></div></div>
 	</html>';
+} else {
+	my $url="login.cgi";
+	my $t=0; # time until redirect activates
+	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 }
 
 1;

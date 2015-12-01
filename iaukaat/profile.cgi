@@ -235,38 +235,6 @@ if ($login == 0) {
 				    		</div>
 						</div>
 		    			</section>";
-		    			$sth = $dbh->prepare("SELECT category,category_count FROM trcategoryinfo where userid='$profileid'");
-						$sth->execute();
-						print "<section class=\"registerdata\">
-							<div class=\"loginbox\">Your total Category Transactions</div><form><table>";
-							
-		    			while (my $ref = $sth->fetchrow_hashref()) {
-		    				my $string = "categoryview.cgi?showmycategory=$ref->{'category'}";
-							encode_entities($string);
-		    				print "<tr><td><a href =\"$string\"><text class=\"fontdec\">$ref->{'category'}</text></a></td>
-				    			<td><input type=\"text\" style=\"width:100%\" value=\"$ref->{'category_count'}\" readonly></td></tr>";
-						}
-		    			print "</table></form>
-				    		</div>
-						</div>
-		    			</section>";
-		    			
-		    			$sth = $dbh->prepare("SELECT tag,tag_count FROM trtaginfo where userid='$profileid'");
-						$sth->execute();
-						print "<section class=\"registerdata\">
-							<div class=\"loginbox\">Your total Tag Transactions</div><form><table>";
-							
-		    			while (my $ref = $sth->fetchrow_hashref()) {
-		    				$val = trim($ref->{'tag'});
-							my $string = "tagview.cgi?showmytag=$val";
-	   						encode_entities($string);
-		    				print "<tr><td><a href =\"$string\"><text class=\"fontdec\">$ref->{'tag'}</text></a></td>
-				    			<td><input type=\"text\" style=\"width:100%\" value=\"$ref->{'tag_count'}\" readonly></td></tr>";
-						}
-		    			print "</table></form>
-				    		</div>
-						</div>
-		    			</section>";
 		    			
 		    			
 		    			if ($session->param('logged_in_user_mycp') eq "admin" || $myusername eq $session->param('logged_in_user_mycp')) {

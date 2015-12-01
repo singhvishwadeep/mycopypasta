@@ -106,55 +106,6 @@ print '<html lang="en-US">
 		
 		</tr>
 		</table>';
-		my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
-		my $dbh = DBI->connect($dsn,"root","");
-		$sth = $dbh->prepare("SELECT category,count FROM categoryinfo");
-		$sth->execute();
-		print "</table><section class=\"registerdata\">
-						<div class=\"loginbox\">Total Category Inputs by all of you</div><form>";
-		my %categoryinfo;
-		while (my $ref = $sth->fetchrow_hashref()) {
-			$categoryinfo{$ref->{'category'}} = $categoryinfo{$ref->{'category'}}+$ref->{'count'};
-		}
-		print "<table>";
-		foreach $key (sort(keys %categoryinfo)) {
-			if ($categoryinfo{$key} == 0) {
-				next;
-			}
-			my $string = "categoryview.cgi?showmycategory=$key";
-			encode_entities($string);
-	        print "<tr><td><a href =\"$string\"><text class=\"fontdec\">$key</text></a></td><td>
-    			<input type=\"text\" value=\"$categoryinfo{$key}\" readonly></td></tr>";
-	    }
-	    print "</table>";
-	    print "</form>
-			   </div>
-		</div>
-	    </section>";
-	    
-	    $sth = $dbh->prepare("SELECT tag,tagcount FROM taginfo");
-		$sth->execute();		
-		print "<section class=\"registerdata\">
-						<div class=\"loginbox\">Total Tag Inputs by all of you</div><form>";
-		my %taginfo;
-		while (my $ref = $sth->fetchrow_hashref()) {
-			$taginfo{$ref->{'tag'}} = $taginfo{$ref->{'tag'}}+$ref->{'tagcount'};
-		}
-		print "<table>";
-		foreach $key (sort(keys %taginfo)) {
-			if ($taginfo{$key} == 0) {
-				next;
-			}
-			my $string = "categoryview.cgi?showmycategory=$key";
-			encode_entities($string);
-	        print "<tr><td><a href =\"$string\"><text class=\"fontdec\">$key</text></a></td><td>
-    			<input type=\"text\" value=\"$taginfo{$key}\" readonly></td></tr>";
-	    }
-	    print "</table>";
-	    print "</form>
-			   </div>
-		</div>
-	    </section>";
 		
 	print '</body>
 	<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">&copy;2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs (myblueskylabs@gmail.com)</a>, powered by Vishwadeep Singh</text></div>
