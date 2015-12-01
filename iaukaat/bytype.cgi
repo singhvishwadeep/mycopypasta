@@ -36,7 +36,9 @@ if($ssid eq "") {
 	}
 }
 
-if ($login) {
+my $ttype = $q->param('id');
+
+if ($login && $ttype ne "") {
 	print '<html lang="en-US">
 		<head>
 			<title>My iAukaat</title>
@@ -53,57 +55,57 @@ if ($login) {
 				  fjs.parentNode.insertBefore(js, fjs);
 				}(document, \'script\', \'facebook-jssdk\'));
 			</script>';
+				
 			
-		
-		my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
-		my $dbh = DBI->connect($dsn,"root","");
-		my $getuser = $session->param('logged_in_userid_mycp');
-		my $sth = $dbh->prepare("select new_value,date from transactioninfo where tid IN (select max(tid) from transactioninfo where userid='$getuser' GROUP by date,account)");
-		$sth->execute();
-		my %data;
-		my @refarr;
-		while (my $ref = $sth->fetchrow_hashref()) {
-			if( exists($data{$ref->{'date'}}) ){
-				$data{$ref->{'date'}} =  $data{$ref->{'date'}} + $ref->{'new_value'};
-			} else{
-				push(@refarr, $ref->{'date'});
-				$data{$ref->{'date'}} = $ref->{'new_value'};
+			my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+			my $dbh = DBI->connect($dsn,"root","");
+			my $getuser = $session->param('logged_in_userid_mycp');
+			my $sth = $dbh->prepare("select amount,date from transactioninfo where userid='$getuser' AND type='$ttype' ORDER BY tid ASC");
+			$sth->execute();
+			my %data;
+			my @refarr;
+			while (my $ref = $sth->fetchrow_hashref()) {
+				if( exists($data{$ref->{'date'}}) ){
+					$data{$ref->{'date'}} =  $data{$ref->{'date'}} + $ref->{'amount'};
+				} else{
+					push(@refarr, $ref->{'date'});
+					$data{$ref->{'date'}} = $ref->{'amount'};
+				}
+			}		
+			
+			print "<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\"></script>\n";
+			print "<script type=\"text/javascript\">\n";
+			print "google.load('visualization', '1.1', {packages: ['line']});\n";
+			print "google.setOnLoadCallback(drawChart);\n";
+			print "function drawChart() {\n";
+	
+			print "var data = new google.visualization.DataTable();\n";
+			print "data.addColumn('number', 'Days');\n";
+			print "data.addColumn('number', 'Balance');\n";
+	
+			print "data.addRows([\n";
+			my $i = 0;
+			foreach my $i (0 .. $#refarr) {
+				if ($i != $#refarr) {
+					print "[$i,$data{$refarr[$i]}],\n";
+				} else {
+					print "[$i,$data{$refarr[$i]}]\n";
+				}
 			}
-		}		
-		
-		print "<script type=\"text/javascript\" src=\"https://www.google.com/jsapi\"></script>\n";
-		print "<script type=\"text/javascript\">\n";
-		print "google.load('visualization', '1.1', {packages: ['line']});\n";
-		print "google.setOnLoadCallback(drawChart);\n";
-		print "function drawChart() {\n";
-
-		print "var data = new google.visualization.DataTable();\n";
-		print "data.addColumn('number', 'Days');\n";
-		print "data.addColumn('number', 'Balance');\n";
-
-		print "data.addRows([\n";
-		my $i = 0;
-		foreach my $i (0 .. $#refarr) {
-			if ($i != $#refarr) {
-				print "[$i,$data{$refarr[$i]}],\n";
-			} else {
-				print "[$i,$data{$refarr[$i]}]\n";
-			}
-		}
-		print "]);\n";
-		
-		print "var options = {\n";
-		print "height: 500\n";
-		print "};\n";
-
-		print "var chart = new google.charts.Line(document.getElementById('linechart_material'));\n";
-
-		print "chart.draw(data, options);\n";
-		print "}\n";
-		print "</script>\n";
-		print '</head>
-		
-		<body>
+			print "]);\n";
+			
+			print "var options = {\n";
+			print "height: 500\n";
+			print "};\n";
+	
+			print "var chart = new google.charts.Line(document.getElementById('linechart_material'));\n";
+	
+			print "chart.draw(data, options);\n";
+			print "}\n";
+			print "</script>\n";
+			print '</head>
+			
+			<body>
 			<table class="box" align="center" width="65%">
 				<tr>
 					<td>
@@ -135,7 +137,7 @@ if ($login) {
 				<tr><td><div id="linechart_material"></div></td></tr>
 			</table>';
 			
-		$sth = $dbh->prepare("select tid,date,time, amount, account, prev_value, new_value, type, category, tags,comment from transactioninfo where userid='$getuser' ORDER BY tid DESC");
+		$sth = $dbh->prepare("select tid,date,time, amount, account, prev_value, new_value, type, category, tags,comment from transactioninfo where userid='$getuser' AND type='$ttype' ORDER BY tid DESC");
 		$sth->execute();
 		
 		print "<table align=\"center\" width=\"65%\"><tr style=\"background-color: #D94E67;color: white;\"><th>Tr ID</th><th>Time</th><th>Account</th><th>Amount</th><th>Balance</th><th>Type</th><th>Comment</th><th>Category</th><th>Tags</th></tr>";
