@@ -42,6 +42,8 @@ if($ssid eq "") {
 	}
 }
 
+my $trrid = $q->param('id');
+
 if ($login) {
 	print '<html lang="en-US">
 		<head>
@@ -101,48 +103,119 @@ if ($login) {
 					      print '<li><a href="contact.cgi">Contact iAukaat Team</a></li></ul>
 					    </div>
 					</td>
-				</tr>
-			</table>';
-				print '<section class="registerdata">
-					<div class="loginbox">Add transaction in iAukaat</div>
-					<form action="addtransactionme.cgi" onsubmit="return myFunction()" METHOD="post" ENCTYPE="multipart/form-data">
-						<table>
-						<tr><td><text class="fontdec">Amount</text></td>
-				    		<td><input type="text" title="amount" placeholder="only digits allowed" style="width:100%" name="amount" maxlength="64" pattern="^[0-9]\d*(\.\d+)?$" required></td></tr>
-						<tr><td><text class="fontdec">Transaction Type</text></td>
-				    		<td><select id="ttype" name="ttype"><option selected value="Expence">Expence</option><option value="Income">Income</option></select></td></tr>
-				    	<tr><td><text class="fontdec">Account</text></td>
-							<td><select id="selectaccount" name="selectaccount">';
-						my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
-						my $dbh = DBI->connect($dsn,"root","");
-						my $getuser = $session->param('logged_in_userid_mycp');
-						my $sth = $dbh->prepare("SELECT distinct(account) FROM traccountinfo where userid='$getuser'");
+				</tr>';
+			
+			
+			my $dsn = "DBI:mysql:database=mycopypasta;host=localhost";
+			my $dbh = DBI->connect($dsn,"root","");
+			my $getuser = $session->param('logged_in_userid_mycp');
+			my $sth = $dbh->prepare("SELECT tid,date,time,userid,amount,account,type,category,tags,ip,http_agent,comment FROM transactioninfo where userid='$getuser' and tid='$trrid'");
+			$sth->execute();
+			my $tid = -1;
+			my $date;
+			my $time;
+			my $userid;
+			my $amount;
+			my $account;
+			my $type;
+			my $category;
+			my $tags;
+			my $ip;
+			my $http_agent;
+			my $comment;
+			while (my $ref = $sth->fetchrow_hashref()) {
+				$tid = $ref->{'tid'};
+				$date = $ref->{'date'};
+				$time = $ref->{'time'};
+				$userid = $ref->{'userid'};
+				$amount = $ref->{'amount'};
+				$account = $ref->{'account'};
+				$type = $ref->{'type'};
+				$category = $ref->{'category'};
+				$tags = $ref->{'tags'};
+				$ip = $ref->{'ip'};
+				$http_agent = $ref->{'http_agent'};
+				$comment = $ref->{'comment'};
+				break;
+			}
+			if ($tid == -1) {
+				print '<tr><td><text style="color:red;font-size:24px;">Transaction ID not found.</text></td></tr></table>';
+			} else {
+				print '</table><section class="registerdata">
+					<div class="loginbox">transaction for iAukaat</div>
+						<form action="edittransactionsave.cgi" onsubmit="return myFunction()" METHOD="post" ENCTYPE="multipart/form-data">
+						<table>';
+						
+						print '<tr><td><text class="fontdec">Transaction ID</text></td>
+				    		<td><input type="text" maxlength="512"  title="tid" style="width:100%" name="tid" id="tid" ';
+				    	print "value=\"$tid\"";
+				    	print ' readonly></td></tr>';
+				    	
+				    	
+						print '<tr><td><text class="fontdec">Amount</text></td>
+				    		<td><input type="text" title="amount" style="width:100%" name="amount" maxlength="64" pattern="^[0-9]\d*(\.\d+)?$" ';
+				    	print "value=\"$amount\"";
+				    	print ' required></td></tr>';
+				    	print '<tr><td><text class="fontdec">Account</text></td>';
+				    	
+				    	print '<td><select id="selectaccount" name="selectaccount">';
+						$sth = $dbh->prepare("SELECT distinct(account) FROM traccountinfo where userid='$userid'");
 						$sth->execute();
 						while (my $ref = $sth->fetchrow_hashref()) {
 							if ($ref->{'account'} ne "") {
-								print " <option selected value=\"$ref->{'account'}\">$ref->{'account'}</option>";
+								my $opt = "";
+								if ($ref->{'account'} eq $account) {
+									$opt = "selected";
+								}
+								print " <option $opt value=\"$ref->{'account'}\">$ref->{'account'}</option>";
 							}
 						}
-						print '</select></td></tr>
-				    	<tr><td><text class="fontdec">Category</text></td>
-							<td><select id="selectcategory" name="selectcategory" onChange="changetextbox();"><option selected value="Create New Category">Create New Category</option>';
+						print '</select></td></tr>';
+						
+						print '<tr><td><text class="fontdec">Transaction Type</text></td>';
+				    	
+				    	print '<td><select id="ttype" name="ttype">';
+						if ($type eq "Expence") {
+							print " <option selected value=\"Expence\">Expence</option>";
+							print " <option value=\"Income\">Income</option>";
+						} else {
+							print " <option value=\"Expence\">Expence</option>";
+							print " <option selected value=\"Income\">Income</option>";
+						}
+						print '</select></td></tr>';
+				    	
+				    	print '<tr><td><text class="fontdec">Category</text></td>
+							<td><select id="selectcategory" name="selectcategory" onChange="changetextbox();"><option value="Create New Category">Create New Category</option>';
 					
 						$sth = $dbh->prepare("SELECT distinct(category) FROM trcategoryinfo where userid='$getuser'");
 						$sth->execute();
 						while (my $ref = $sth->fetchrow_hashref()) {
 							if ($ref->{'category'} ne "") {
-								print " <option value=\"$ref->{'category'}\">$ref->{'category'}</option>";
+								my $opt = "";
+								if ($ref->{'category'} eq $category) {
+									$opt = "selected";
+								}
+								print " <option $opt value=\"$ref->{'category'}\">$ref->{'category'}</option>";
 							}
 						}
-						print '</select><input required type="text" title="new_category" placeholder="New Category (max 128 characters)" id="new_category" name="new_category" maxlength="128"/></td></tr>
-						<tr><td><text class="fontdec">Tags</text></td>
-				    		<td><input type="text" title="tags" placeholder="tags" style="width:100%" name="tags" id="tags" maxlength="512" placeholder="maximum 64 characters, no special characters" required></td></tr>
-						<tr><td><text class="fontdec">Comment</text></td>
-				    		<td><input type="text" title="comment" placeholder="comment" style="width:100%" name="comment" id="comment" maxlength="512" placeholder="maximum 64 characters, no special characters" required></td></tr>
-				    	</table><br />
+						print '</select><input required type="text" title="new_category" placeholder="New Category (max 128 characters)" id="new_category" name="new_category" maxlength="128" disabled/></td></tr>';
+				    	
+				    	print '<tr><td><text class="fontdec">Tags</text></td>
+				    		<td><input type="text" maxlength="512"  title="tags" style="width:100%" name="tags" id="tags" ';
+				    	print "value=\"$tags\"";
+				    	print ' required></td></tr>';
+				    	
+				    	print '<tr><td><text class="fontdec">Comment</text></td>
+				    		<td><input type="text" maxlength="512"  title="comment" style="width:100%" name="comment" id="comment" ';
+				    	print "value=\"$comment\"";
+				    	print ' required></td></tr>';
+				    	
+						print '</table><br />
 				    	<input type="submit" class="submitbox" name="submit" alt="search" value="Submit">
 				    </form>
 				</section>';
+				print '</table>';
+			}
 		print '</body>
 		<div style="text-align:center"><text style="color:grey;font-size:12px;font:status-bar">&copy;2015 <a href="mailto:myblueskylabs@gmail.com ?Subject=Reg:Hello" target="_top">My Blue Sky Labs (myblueskylabs@gmail.com)</a>, powered by Vishwadeep Singh</text></div>
 		<hr width="65%">

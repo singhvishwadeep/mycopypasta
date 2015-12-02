@@ -240,7 +240,7 @@ if ($login) {
 			} else {
 				$line = "background-color: #ff5050;color: black;";
 			}
-			print "<tr style=\"$line\"><td>$ref->{'tid'}</td><td>$ref->{'date'} $ref->{'time'}</td><td><a href=\"byaccount.cgi?id=$ref->{'account'}\" target=\"_blank\">$ref->{'account'}</a></td><td>$ref->{'amount'}</td><td><a href=\"bytype.cgi?id=$ref->{'type'}\" target=\"_blank\">$ref->{'type'}</a></td><td>$ref->{'comment'}</td><td><a href=\"bycategory.cgi?id=$ref->{'category'}\" target=\"_blank\">$ref->{'category'}</a></td>";
+			print "<tr style=\"$line\"><td><a href=\"viewtransaction.cgi?id=$ref->{'tid'}\" target=\"_blank\">$ref->{'tid'}</a></td><td>$ref->{'date'} $ref->{'time'}</td><td><a href=\"byaccount.cgi?id=$ref->{'account'}\" target=\"_blank\">$ref->{'account'}</a></td><td>$ref->{'amount'}</td><td><a href=\"bytype.cgi?id=$ref->{'type'}\" target=\"_blank\">$ref->{'type'}</a></td><td>$ref->{'comment'}</td><td><a href=\"bycategory.cgi?id=$ref->{'category'}\" target=\"_blank\">$ref->{'category'}</a></td>";
 			print "<td>";
 			my @values = split(',', $ref->{'tags'});
 			foreach my $val (@values) {

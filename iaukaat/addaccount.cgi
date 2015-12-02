@@ -18,11 +18,17 @@ my $login = 0;
 
 if($ssid eq "") {
 	# empty/no cookie found. Hence not logged in
+	my $url="login.cgi";
+	my $t=0; # time until redirect activates
+	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 } else {
 	# cookie has some value, hence loading session from $ssid
 	$session = CGI::Session->load($ssid) or die "$!";
 	if($session->is_expired || $session->is_empty) {
 		# if session is expired/empty, need to relogin
+		my $url="login.cgi";
+		my $t=0; # time until redirect activates
+		print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 	} else {
 		my $value = $session->param('logged_in_status_mycp');
 		if ($value eq "1") {
@@ -139,7 +145,7 @@ if ($login) {
 							<tr><td><text class="fontdec">Account Type</text></td>
 					    		<td><select id="ttype" name="ttype"><option selected value="credit">credit</option><option value="debit">debit</option></select></td></tr>
 							<tr><td><text class="fontdec">Balance</text></td>
-					    		<td><input type="text" title="balance" placeholder="initial balance (optional)" style="width:100%" name="balance" id="balance" maxlength="64" pattern="^[1-9]\d*(\.\d+)?$"></td></tr>
+					    		<td><input type="text" title="balance" placeholder="initial balance (optional)" style="width:100%" name="balance" id="balance" maxlength="64" pattern="^[0-9]\d*(\.\d+)?$"></td></tr>
 					    	</table><br />
 					    	<input type="submit" class="submitbox" name="submit" alt="search" value="Submit">
 					    </form>

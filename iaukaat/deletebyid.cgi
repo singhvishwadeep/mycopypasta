@@ -20,16 +20,26 @@ my $login = 0;
 
 if($ssid eq "") {
 	# empty/no cookie found. Hence not logged in
+	my $url="login.cgi";
+	my $t=0; # time until redirect activates
+	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 } else {
 	# cookie has some value, hence loading session from $ssid
 	$session = CGI::Session->load($ssid) or die "$!";
 	if($session->is_expired || $session->is_empty) {
 		# if session is expired/empty, need to relogin
+		my $url="login.cgi";
+		my $t=0; # time until redirect activates
+		print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 	} else {
 		my $value = $session->param('logged_in_status_mycp');
 		if ($value eq "1") {
 			# properly logged in
 			$login = 1;
+		} else {
+			my $url="login.cgi";
+			my $t=0; # time until redirect activates
+			print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
 		}
 	}
 }
@@ -40,11 +50,7 @@ sub  trim {
 	return $s;
 }
 
-if ($login == 0) {
-	my $url="login.cgi";
-	my $t=0; # time until redirect activates
-	print "<META HTTP-EQUIV=refresh CONTENT=\"$t;URL=$url\">\n";
-} else {
+if ($login == 1) {
 
 	my $editid = $q->param('id');
 	
