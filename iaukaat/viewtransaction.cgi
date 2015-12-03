@@ -146,7 +146,10 @@ if ($login) {
 					print " $tid";
 					print ' in iAukaat <a class="edit_button" href="edittransaction.cgi?id=';
 					print $tid;
-					print '"><img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a></div>
+					print '"><img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;padding-right:3px">Edit</a>';
+					print '&nbsp;&nbsp;&nbsp;<a class="edit_button" href="deletetransaction.cgi?id=';
+					print $tid;
+					print '"><img src="images/edit.jpg" alt="Edit" style="width:10px;height:10px;">Delete</a></div>
 						<form> 		<table>
 						<tr><td><text class="fontdec">Amount</text></td>
 				    		<td><input type="text" maxlength="64" ';
