@@ -1,4 +1,4 @@
-#!C:\Strawberry\perl\bin\perl.exe
+#!C:\Strawberry\perl\bin\perl.exe -w
 
 use CGI;
 use CGI::Carp qw/fatalsToBrowser warningsToBrowser/;
